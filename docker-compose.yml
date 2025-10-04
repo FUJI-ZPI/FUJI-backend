@@ -1,0 +1,31 @@
+services:
+  #  comment out server for local development
+  server:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SERVICE_DB_URL=${SERVICE_DB_URL}
+      - SERVICE_DB_LOGIN=${SERVICE_DB_LOGIN}
+      - SERVICE_DB_PASSWORD=${SERVICE_DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresdb
+
+  postgresdb:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${SERVICE_DB_LOGIN}
+      POSTGRES_PASSWORD: ${SERVICE_DB_PASSWORD}
+      POSTGRES_DB: ${SERVICE_DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
