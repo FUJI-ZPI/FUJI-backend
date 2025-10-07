@@ -1,10 +1,11 @@
-package com.zpi.fujibackend.chatbot;
+package com.zpi.fujibackend.chatbot.domain;
 
 import com.openai.client.OpenAIClient;
 import com.openai.models.ChatModel;
 import com.openai.models.chat.completions.ChatCompletion;
 import com.openai.models.chat.completions.ChatCompletionCreateParams;
-import com.zpi.fujibackend.chatbot.dto.ChatbotRequestDto;
+import com.zpi.fujibackend.chatbot.ChatbotFacade;
+import com.zpi.fujibackend.chatbot.dto.ChatbotMessageForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class ChatbotService implements ChatbotServiceInterface {
+class ChatbotService implements ChatbotFacade {
 
     private final OpenAIClient client;
-    private final String systemPrompt = """
+    private static final String systemPrompt = """
             You are a friendly and patient Japanese language tutor named "Yuki-sensei". Your goal is to have a simple, everyday conversation in Japanese with a student who is a beginner.
             Follow these rules:
             1.  **Always respond in simple, polite Japanese (です/ます form).**
@@ -28,7 +29,8 @@ public class ChatbotService implements ChatbotServiceInterface {
             """;
 
 
-    public Optional<String> askChatbot(ChatbotRequestDto request) {
+    @Override
+    public Optional<String> askChatbot(ChatbotMessageForm request) {
         ChatCompletionCreateParams createParams = ChatCompletionCreateParams.builder()
                 .model(ChatModel.GPT_5_NANO)
                 .addSystemMessage(systemPrompt)
