@@ -2,6 +2,7 @@ package com.zpi.fujibackend.chatbot.controller;
 
 
 import com.zpi.fujibackend.chatbot.ChatbotFacade;
+import com.zpi.fujibackend.chatbot.dto.ChatbotInnerResponseDto;
 import com.zpi.fujibackend.chatbot.dto.ChatbotMessageForm;
 import com.zpi.fujibackend.chatbot.dto.ChatbotResponseDto;
 import jakarta.validation.Valid;
@@ -19,7 +20,6 @@ import java.util.Optional;
 class ChatbotController {
 
     private final ChatbotFacade chatbotService;
-    private static final String errorMessage = "Error, failed to generate response";
 
     private static final class Routes {
         private static final String ASK = "/ask";
@@ -27,13 +27,13 @@ class ChatbotController {
 
     @PostMapping(Routes.ASK)
     ChatbotResponseDto askChatbot(@Valid @RequestBody ChatbotMessageForm request) {
-        Optional<String> chatResponseOpt = chatbotService.askChatbot(request);
+        Optional<ChatbotInnerResponseDto> chatResponseOpt = chatbotService.askChatbot(request);
         return chatResponseOpt
                 .map(
-                        str -> new ChatbotResponseDto(true, str)
+                        chatResponse -> new ChatbotResponseDto(true, chatResponse)
                 )
                 .orElseGet(
-                        () -> new ChatbotResponseDto(false, errorMessage)
+                        () -> new ChatbotResponseDto(false, null)
                 );
     }
 }

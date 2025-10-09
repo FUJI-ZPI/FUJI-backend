@@ -1,7 +1,10 @@
 package com.zpi.fujibackend.chatbot.dto;
 
+import javax.annotation.Nullable;
+
 public record ChatbotResponseDto(
         boolean success,
-        String response
+        @Nullable
+        ChatbotInnerResponseDto response
 ) {
 }
