@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 enum MessageType {
     USER,
@@ -24,9 +25,9 @@ public record ChatbotHistorySingleMessage(
         LocalDateTime dateTime
 
 ) {
-        public String toConversationString() {
+    public String toConversationString() {
         String speaker = messageType == MessageType.USER ? "User: " : "Yuki-sensei: ";
-        String time = " (" + dateTime + ")";
+        String time = " (" + dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + ")";
         return speaker + message + time;
 
     }
