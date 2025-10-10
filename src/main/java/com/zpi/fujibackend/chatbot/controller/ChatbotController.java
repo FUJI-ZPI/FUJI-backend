@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequestMapping("/api/chatbot/v1")
 class ChatbotController {
 
-    private final ChatbotFacade chatbotService;
+    private final ChatbotFacade chatbotFacade;
 
     private static final class Routes {
         private static final String ASK = "/ask";
@@ -27,7 +27,7 @@ class ChatbotController {
 
     @PostMapping(Routes.ASK)
     ChatbotResponseDto askChatbot(@Valid @RequestBody ChatbotMessageForm request) {
-        Optional<ChatbotInnerResponseDto> chatResponseOpt = chatbotService.askChatbot(request);
+        Optional<ChatbotInnerResponseDto> chatResponseOpt = chatbotFacade.askChatbot(request);
         return chatResponseOpt
                 .map(
                         chatResponse -> new ChatbotResponseDto(true, chatResponse)

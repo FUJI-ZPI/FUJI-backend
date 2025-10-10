@@ -48,6 +48,8 @@ class ChatbotService implements ChatbotFacade {
             {"japanese":"こんにちは、元気ですか？","english":"Hello, how are you?","note":""}
             """;
 
+    private static final int MAX_HISTORY_MESSAGES = 30;
+
     private final OpenAIClient client;
     private final ObjectMapper objectMapper;
 
@@ -57,7 +59,7 @@ class ChatbotService implements ChatbotFacade {
         final String fullPrompt = request.messages().stream()
                 .sorted(Comparator.comparing(ChatbotHistorySingleMessage::dateTime).reversed())
                                 .map(ChatbotHistorySingleMessage::toConversationString)
-                .limit(30)
+                .limit(MAX_HISTORY_MESSAGES)
                 .collect(Collectors.joining("\n"));
 
         ChatCompletionCreateParams createParams = ChatCompletionCreateParams.builder()
