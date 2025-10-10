@@ -11,6 +11,7 @@ services:
       - SERVICE_DB_PASSWORD=${SERVICE_DB_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     ports:
       - "8080:8080"
     depends_on:
