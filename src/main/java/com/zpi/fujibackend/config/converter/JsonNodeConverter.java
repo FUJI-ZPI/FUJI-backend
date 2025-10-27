@@ -26,5 +26,16 @@ public class JsonNodeConverter {
         }
     }
 
+    public <T> T convertToDto(String jsonString, Class<T> targetDtoClass) {
+        try {
+            if (jsonString == null || jsonString.isBlank()) return null;
+            return objectMapper.readValue(jsonString, targetDtoClass);
+
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Failed to parse JSON string: " + jsonString, e);
+        }
+
+    }
+
 
 }
