@@ -22,9 +22,8 @@ class VocabularyService implements VocabularyFacade {
 
     @Override
     public List<VocabularyDto> getByLevel(int level) {
-        List<Vocabulary> vocabularyList = vocabularyRepository.getVocabularyByLevel(level);
 
-        return vocabularyList
+        return vocabularyRepository.getVocabularyByLevel(level)
                 .stream()
                 .map(vocab -> new VocabularyDto(vocab.getUuid(), vocab.getCharacters()))
                 .toList();

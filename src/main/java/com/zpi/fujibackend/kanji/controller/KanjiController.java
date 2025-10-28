@@ -29,12 +29,12 @@ class KanjiController {
 
     @GetMapping(Routes.LEVEL)
     List<KanjiDto> getKanjiByLevel(@PathVariable int level) {
-        return kanjiFacade.getKanjisByLevel(level);
+        return kanjiFacade.getByLevel(level);
     }
 
     @GetMapping(Routes.DETAILS)
     KanjiDetailDto getKanjiByUuid(@PathVariable UUID uuid) {
-        return kanjiFacade.getKanjiByUuid(uuid);
+        return kanjiFacade.getByUuid(uuid);
     }
 
 }

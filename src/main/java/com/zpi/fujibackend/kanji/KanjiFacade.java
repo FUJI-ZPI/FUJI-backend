@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public interface KanjiFacade {
 
-    List<KanjiDto> getKanjisByLevel(int level);
+    List<KanjiDto> getByLevel(int level);
 
-    KanjiDetailDto getKanjiByUuid(UUID uuid);
+    KanjiDetailDto getByUuid(UUID uuid);
 
 }

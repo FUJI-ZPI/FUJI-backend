@@ -33,7 +33,7 @@ class VocabularyController {
     }
 
     @GetMapping(Routes.DETAILS)
-    VocabularyDetailsDto findVocabularyByUuid(@PathVariable("uuid") UUID uuid) {
+    VocabularyDetailsDto findVocabularyByUuid(@PathVariable UUID uuid) {
         return vocabularyFacade.getByUuid(uuid);
     }
 }

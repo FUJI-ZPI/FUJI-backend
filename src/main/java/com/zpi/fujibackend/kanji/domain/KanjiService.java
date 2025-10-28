@@ -21,7 +21,7 @@ class KanjiService implements KanjiFacade {
 
 
     @Override
-    public List<KanjiDto> getKanjisByLevel(int level) {
+    public List<KanjiDto> getByLevel(int level) {
         return kanjiRepository.findByLevel(level)
                 .stream()
                 .map(kanji -> new KanjiDto(kanji.getUuid(), kanji.getCharacter()))
@@ -29,7 +29,7 @@ class KanjiService implements KanjiFacade {
     }
 
     @Override
-    public KanjiDetailDto getKanjiByUuid(UUID uuid) {
+    public KanjiDetailDto getByUuid(UUID uuid) {
         return kanjiRepository.getByUuid(uuid)
                 .map(k ->
                         new KanjiDetailDto(
