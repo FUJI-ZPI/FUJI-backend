@@ -1,7 +1,7 @@
 package com.zpi.fujibackend.vocabulary.domain;
 
+import com.zpi.fujibackend.common.exception.NotFoundException;
 import com.zpi.fujibackend.config.converter.JsonNodeConverter;
-import com.zpi.fujibackend.config.exception.NotFoundException;
 import com.zpi.fujibackend.vocabulary.VocabularyFacade;
 import com.zpi.fujibackend.vocabulary.dto.VocabularyDetailsDto;
 import com.zpi.fujibackend.vocabulary.dto.VocabularyDto;

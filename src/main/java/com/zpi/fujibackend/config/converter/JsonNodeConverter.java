@@ -17,7 +17,7 @@ public class JsonNodeConverter {
 
     public JsonNode toJsonNode(String jsonString) {
         try {
-            if (jsonString == null) return null;
+            if (jsonString == null || jsonString.isBlank()) return null;
 
             return objectMapper.readTree(jsonString);
 

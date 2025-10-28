@@ -1,4 +1,4 @@
-package com.zpi.fujibackend.config.exception;
+package com.zpi.fujibackend.common.exception;
 
 
 import lombok.extern.slf4j.Slf4j;

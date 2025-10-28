@@ -1,4 +1,4 @@
-package com.zpi.fujibackend.config.exception;
+package com.zpi.fujibackend.common.exception;
 
 public class NotFoundException extends RuntimeException {
 
