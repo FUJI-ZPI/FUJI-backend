@@ -5,10 +5,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 interface KanjiRepository extends JpaRepository<Kanji, Long> {
+
     List<Kanji> findByLevel(int level);
+
+    Optional<Kanji> getByUuid(UUID uuid);
 
     @Query("""
     SELECT k
