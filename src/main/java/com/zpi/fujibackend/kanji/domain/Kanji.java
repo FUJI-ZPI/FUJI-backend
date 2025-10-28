@@ -18,10 +18,10 @@ import org.hibernate.type.SqlTypes;
 @NoArgsConstructor
 @Entity
 @Table(name = "kanji", schema = "wanikani")
-class Kanji extends AbstractUuidEntity {
+public class Kanji extends AbstractUuidEntity {
 
     @Column(name = "level", nullable = false)
-    private int level;
+    private Integer level;
 
     @Column(name = "character")
     private String character;
@@ -40,6 +40,4 @@ class Kanji extends AbstractUuidEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "svg_data", columnDefinition = "jsonb")
     private String svgData;
-
-
 }
