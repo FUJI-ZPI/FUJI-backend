@@ -1,8 +1,7 @@
 package com.zpi.fujibackend.srs.domain;
 
 import com.zpi.fujibackend.kanji.KanjiFacade;
-import com.zpi.fujibackend.kanji.dto.KanjiDto;
-import com.zpi.fujibackend.kanji.mapper.KanjiDtoMapper;
+import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.srs.SrsFacade;
 import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.user.domain.User;
@@ -24,21 +23,20 @@ public class SrsService implements SrsFacade {
 
     private final KanjiFacade kanjiFacade;
     private final UserFacade userFacade;
-    private final KanjiDtoMapper kanjiDtoMapper;
 
     private final int[] intervals = {4, 8, 24, 48, 168, 336, 672, 2688};
 
     @Override
-    public List<KanjiDto> getReviewBatch(int size) {
+    public List<KanjiDetailDto> getReviewBatch(int size) {
         User currentUser = userFacade.getCurrentUser();
         return cardRepository.findDueForUser(currentUser.getId(), Instant.now(), PageRequest.of(0, size))
                 .stream()
-                .map(card -> kanjiDtoMapper.toDto(card.getKanji()))
+                .map(card -> KanjiDetailDto.toDto(card.getKanji()))
                 .toList();
     }
 
     @Override
-    public List<KanjiDto> getLessonBatch(int size) {
+    public List<KanjiDetailDto> getLessonBatch(int size) {
         return kanjiFacade.getKanjisNotInCards();
     }
 

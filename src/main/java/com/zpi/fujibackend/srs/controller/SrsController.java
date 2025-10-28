@@ -1,5 +1,6 @@
 package com.zpi.fujibackend.srs.controller;
 
+import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import com.zpi.fujibackend.srs.SrsFacade;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,12 @@ class SrsController {
     }
 
     @GetMapping(Routes.REVIEW_BATCH)
-    List<KanjiDto> getReviewBatch(@RequestParam(defaultValue = "30") int size) {
+    List<KanjiDetailDto> getReviewBatch(@RequestParam(defaultValue = "30") int size) {
         return srsFacade.getReviewBatch(size);
     }
 
     @GetMapping(Routes.LESSON_BATCH)
-    List<KanjiDto> getLessonBatch(@RequestParam(defaultValue = "5") int size) {
+    List<KanjiDetailDto> getLessonBatch(@RequestParam(defaultValue = "5") int size) {
         return srsFacade.getLessonBatch(size);
     }
 

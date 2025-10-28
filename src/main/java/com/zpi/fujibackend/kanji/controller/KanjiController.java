@@ -3,7 +3,6 @@ package com.zpi.fujibackend.kanji.controller;
 
 import com.zpi.fujibackend.kanji.KanjiFacade;
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
-import com.zpi.fujibackend.kanji.dto.KanjiCharacterDto;
 import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
