@@ -43,7 +43,7 @@ public class SrsService implements SrsFacade {
     @Override
     public void increaseFamiliarity(UUID uuid) {
         Card card = cardRepository.findByUuid(uuid);
-        changeFamiliarity(card, Math.max(card.getFamiliarity() + 1, intervals.length - 1));
+        changeFamiliarity(card, Math.min(card.getFamiliarity() + 1, intervals.length - 1));
     }
 
     @Override
