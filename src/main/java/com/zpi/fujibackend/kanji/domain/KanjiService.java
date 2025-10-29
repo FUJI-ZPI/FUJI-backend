@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,7 +45,7 @@ class KanjiService implements KanjiFacade {
     }
 
     @Override
-    public Kanji getKanjiByUuid(UUID uuid) {
+    public Optional<Kanji> getKanjiByUuid(UUID uuid) {
         return kanjiRepository.findByUuid(uuid);
     }
 }

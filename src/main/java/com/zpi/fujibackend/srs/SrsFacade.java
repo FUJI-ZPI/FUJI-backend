@@ -11,5 +11,5 @@ public interface SrsFacade {
 
     void increaseFamiliarity(UUID uuid);
     void decreaseFamiliarity(UUID uuid);
-    void addCard(UUID kanjiUuid);
+    Boolean addCard(UUID kanjiUuid);
 }

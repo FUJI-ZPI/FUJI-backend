@@ -1,6 +1,7 @@
 package com.zpi.fujibackend.srs.domain;
 
 import com.zpi.fujibackend.kanji.KanjiFacade;
+import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.srs.SrsFacade;
 import com.zpi.fujibackend.user.UserFacade;
@@ -24,7 +25,7 @@ public class SrsService implements SrsFacade {
     private final KanjiFacade kanjiFacade;
     private final UserFacade userFacade;
 
-    private final int[] intervals = {4, 8, 24, 48, 168, 336, 672, 2688};
+    private final static int[] INTERVALS = {4, 8, 24, 48, 168, 336, 672, 2688};
 
     @Override
     public List<KanjiDetailDto> getReviewBatch(int size) {
@@ -43,7 +44,7 @@ public class SrsService implements SrsFacade {
     @Override
     public void increaseFamiliarity(UUID uuid) {
         Card card = cardRepository.findByUuid(uuid);
-        changeFamiliarity(card, Math.min(card.getFamiliarity() + 1, intervals.length - 1));
+        changeFamiliarity(card, Math.min(card.getFamiliarity() + 1, INTERVALS.length - 1));
     }
 
     @Override
@@ -54,21 +55,28 @@ public class SrsService implements SrsFacade {
 
     private void changeFamiliarity(Card card, int newFamiliarity) {
         card.setFamiliarity(newFamiliarity);
-        card.setIntervalHours(intervals[newFamiliarity]);
+        card.setIntervalHours(INTERVALS[newFamiliarity]);
         card.setLastReviewed(Instant.now());
-        card.setNextDue(Instant.now().plus(intervals[newFamiliarity], ChronoUnit.HOURS));
+        card.setNextDue(Instant.now().plus(INTERVALS[newFamiliarity], ChronoUnit.HOURS));
     }
 
     @Override
-    public void addCard(UUID kanjiUuid) {
+    public Boolean addCard(UUID kanjiUuid) {
+        Kanji kanji = kanjiFacade.getKanjiByUuid(kanjiUuid).orElse(null);
+
+        if (kanji == null) {
+            return false;
+        }
+
         Card card = new Card(
-                kanjiFacade.getKanjiByUuid(kanjiUuid),
+                kanji,
                 userFacade.getCurrentUser(),
                 0,
-                intervals[0],
+                INTERVALS[0],
                 Instant.now(),
-                Instant.now().plus(intervals[0], ChronoUnit.HOURS)
+                Instant.now().plus(INTERVALS[0], ChronoUnit.HOURS)
         );
         cardRepository.save(card);
+        return true;
     }
 }

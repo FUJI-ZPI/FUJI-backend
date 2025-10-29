@@ -6,6 +6,7 @@ import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.kanji.dto.KanjiDto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface KanjiFacade {
@@ -15,5 +16,5 @@ public interface KanjiFacade {
 
     List<KanjiDetailDto> getKanjisNotInCards(int size);
 
-    Kanji getKanjiByUuid(UUID uuid);
+    Optional<Kanji> getKanjiByUuid(UUID uuid);
 }
