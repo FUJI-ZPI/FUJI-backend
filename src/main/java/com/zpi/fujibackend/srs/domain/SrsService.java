@@ -67,7 +67,7 @@ public class SrsService implements SrsFacade {
                 0,
                 intervals[0],
                 Instant.now(),
-                Instant.now().plus(5, ChronoUnit.HOURS)
+                Instant.now().plus(intervals[0], ChronoUnit.HOURS)
         );
         cardRepository.save(card);
     }
