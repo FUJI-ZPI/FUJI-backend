@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/auth/v1")
+@RequestMapping("/api/v1/auth")
 class AuthController {
 
     private static final class Routes {

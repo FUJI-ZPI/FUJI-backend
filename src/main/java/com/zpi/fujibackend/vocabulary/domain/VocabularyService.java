@@ -17,8 +17,6 @@ import java.util.UUID;
 class VocabularyService implements VocabularyFacade {
 
     private final VocabularyRepository vocabularyRepository;
-    private final JsonNodeConverter jsonNodeConverter;
-
 
     @Override
     public List<VocabularyDto> getByLevel(int level) {
@@ -38,7 +36,7 @@ class VocabularyService implements VocabularyFacade {
                                 v.getLevel(),
                                 v.getCharacters(),
                                 v.getUnicodeCharacters(),
-                                jsonNodeConverter.convertToDto(v.getDocument(), WanikaniVocabularyJsonDto.class)
+                                JsonNodeConverter.convertToDto(v.getDocument(), WanikaniVocabularyJsonDto.class)
                         ))
                 .orElseThrow(() -> new NotFoundException("No Vocabulary for UUID: " + uuid));
 

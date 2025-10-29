@@ -18,7 +18,7 @@ class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
 
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/api/auth/v1/**",
+            "/api/v1/auth/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html"

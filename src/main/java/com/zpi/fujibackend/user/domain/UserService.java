@@ -22,10 +22,28 @@ class UserService implements UserFacade {
                 .orElseGet(() -> userRepository.save(new User(email))).getUuid();
     }
 
+    @Override
     public User getCurrentUser() {
         final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         final String userUuid = (String) auth.getPrincipal();
         return getUserByUuid(UUID.fromString(userUuid));
+    }
+
+    @Override
+    public void increaseUserLevel() {
+        User currentUser = getCurrentUser();
+        currentUser.setLevel(currentUser.getLevel() + 1);
+        userRepository.save(currentUser);
+    }
+
+    @Override
+    public Long getCurrentUserId() {
+        return getCurrentUser().getId();
+    }
+
+    @Override
+    public Integer getCurrentUserLevel() {
+        return getCurrentUser().getLevel();
     }
 
     private User getUserByUuid(final UUID uuid) {

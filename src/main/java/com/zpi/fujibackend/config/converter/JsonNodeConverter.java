@@ -7,26 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-
-@RequiredArgsConstructor
-@Component
 public class JsonNodeConverter {
-
-    private final ObjectMapper objectMapper;
-
-
-    public JsonNode toJsonNode(String jsonString) {
-        try {
-            if (jsonString == null || jsonString.isBlank()) return null;
-
-            return objectMapper.readTree(jsonString);
-
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Failed to parse JSON string: " + jsonString, e);
-        }
-    }
-
-    public <T> T convertToDto(String jsonString, Class<T> targetDtoClass) {
+    public static <T> T convertToDto(String jsonString, Class<T> targetDtoClass) {
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
             if (jsonString == null || jsonString.isBlank()) return null;
             return objectMapper.readValue(jsonString, targetDtoClass);
@@ -36,6 +19,4 @@ public class JsonNodeConverter {
         }
 
     }
-
-
 }

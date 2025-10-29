@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/chatbot/v1")
+@RequestMapping("/api/v1/chatbot")
 class ChatbotController {
 
     private final ChatbotFacade chatbotFacade;
