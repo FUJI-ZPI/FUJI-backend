@@ -13,7 +13,7 @@ public interface KanjiFacade {
 
     KanjiDetailDto getByUuid(UUID uuid);
 
-    List<KanjiDetailDto> getKanjisNotInCards();
+    List<KanjiDetailDto> getKanjisNotInCards(int size);
 
     Kanji getKanjiByUuid(UUID uuid);
 }

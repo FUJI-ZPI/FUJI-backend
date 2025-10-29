@@ -6,6 +6,7 @@ import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import com.zpi.fujibackend.user.UserFacade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,8 +36,8 @@ class KanjiService implements KanjiFacade {
     }
 
     @Override
-    public List<KanjiDetailDto> getKanjisNotInCards() {
-        return kanjiRepository.findAllNotInCardsForUser(userFacade.getCurrentUserId(), userFacade.getCurrentUserLevel())
+    public List<KanjiDetailDto> getKanjisNotInCards(int size) {
+        return kanjiRepository.findAllNotInCardsForUser(userFacade.getCurrentUserId(), userFacade.getCurrentUserLevel(), Pageable.ofSize(size))
                 .stream()
                 .map(KanjiDetailDto::toDto)
                 .toList();

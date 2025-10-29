@@ -1,7 +1,6 @@
 package com.zpi.fujibackend.srs.controller;
 
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
-import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import com.zpi.fujibackend.srs.SrsFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

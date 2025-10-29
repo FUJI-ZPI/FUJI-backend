@@ -1,5 +1,6 @@
 package com.zpi.fujibackend.kanji.domain;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,7 +22,7 @@ interface KanjiRepository extends JpaRepository<Kanji, Long> {
     WHERE c.id IS NULL
       AND k.level = :level
     """)
-    List<Kanji> findAllNotInCardsForUser(@Param("userId") Long userId, @Param("level") int level);
+    List<Kanji> findAllNotInCardsForUser(@Param("userId") Long userId, @Param("level") int level, Pageable pageable);
 
     Kanji findByUuid(UUID uuid);
 }

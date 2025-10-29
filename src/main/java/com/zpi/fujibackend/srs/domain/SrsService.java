@@ -37,7 +37,7 @@ public class SrsService implements SrsFacade {
 
     @Override
     public List<KanjiDetailDto> getLessonBatch(int size) {
-        return kanjiFacade.getKanjisNotInCards();
+        return kanjiFacade.getKanjisNotInCards(size);
     }
 
     @Override

@@ -19,11 +19,11 @@ import java.time.Instant;
 @AllArgsConstructor
 @Table(name = "cards", schema = "wanikani")
 public class Card extends AbstractUuidEntity {
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kanji_id")
     private Kanji kanji;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
