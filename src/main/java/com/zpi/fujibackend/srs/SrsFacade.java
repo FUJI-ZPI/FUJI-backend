@@ -1,7 +1,6 @@
 package com.zpi.fujibackend.srs;
 
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
-import com.zpi.fujibackend.kanji.dto.KanjiDto;
 
 import java.util.List;
 import java.util.UUID;
