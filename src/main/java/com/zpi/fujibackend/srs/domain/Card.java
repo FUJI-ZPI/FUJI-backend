@@ -17,7 +17,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "cards", schema = "wanikani")
+@Table(name = "cards")
 public class Card extends AbstractUuidEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kanji_id")
