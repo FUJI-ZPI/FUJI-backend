@@ -12,7 +12,7 @@ public class FilenameValidator implements ConstraintValidator<ValidFilename, Str
 
     @Override
     public boolean isValid(String filename, ConstraintValidatorContext context) {
-        log.info("Validating filename: {}", filename);
+        log.debug("Validating filename: {}", filename);
         if (filename == null || filename.isBlank()) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Filename must not be blank")
