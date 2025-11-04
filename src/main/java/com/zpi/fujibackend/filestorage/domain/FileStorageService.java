@@ -26,6 +26,7 @@ class FileStorageService implements FileStorageFacade {
         this.bucketName = bucketName;
     }
 
+    @Override
     public InputStream downloadFile(String objectKey) {
         try {
             GetObjectArgs args = GetObjectArgs.builder()

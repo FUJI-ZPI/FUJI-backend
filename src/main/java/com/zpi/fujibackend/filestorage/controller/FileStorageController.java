@@ -2,8 +2,7 @@ package com.zpi.fujibackend.filestorage.controller;
 
 
 import com.zpi.fujibackend.filestorage.FileStorageFacade;
-import com.zpi.fujibackend.filestorage.dto.FileName;
-import jakarta.validation.Valid;
+import com.zpi.fujibackend.filestorage.domain.ValidFilename;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -27,12 +26,12 @@ class FileStorageController {
 
 
     @GetMapping("/download/{filename}")
-    ResponseEntity<InputStreamResource> downloadFile(@PathVariable @Valid FileName filename) {
+    ResponseEntity<InputStreamResource> downloadFile(@PathVariable @ValidFilename String filename) {
 
-        InputStream fileStream = fileStorageFacade.downloadFile(filename.value());
+        InputStream fileStream = fileStorageFacade.downloadFile(filename);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename.value());
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
 
         return ResponseEntity.ok()
                 .headers(headers)
