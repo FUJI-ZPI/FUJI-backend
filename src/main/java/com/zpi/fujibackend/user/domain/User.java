@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-class User extends AbstractUuidEntity {
+public class User extends AbstractUuidEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -25,8 +25,12 @@ class User extends AbstractUuidEntity {
     @Column(nullable = false)
     private OffsetDateTime created;
 
+    @Column(nullable = false)
+    private Integer level;
+
     public User(final String email) {
         this.email = email;
         created = OffsetDateTime.now();
+        level = 1;
     }
 }
