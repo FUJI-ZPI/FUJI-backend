@@ -1,7 +1,9 @@
+CREATE SCHEMA IF NOT EXISTS wanikani;
+
 CREATE TABLE IF NOT EXISTS wanikani.vocabulary
 (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    level integer NOT NULL,
+    level INTEGER NOT NULL,
     characters character varying(255),
     document jsonb,
     unicode_characters text[],
