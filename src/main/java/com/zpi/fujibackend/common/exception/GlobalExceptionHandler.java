@@ -1,6 +1,7 @@
 package com.zpi.fujibackend.common.exception;
 
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -13,26 +14,27 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+@Hidden
+class GlobalExceptionHandler {
 
     private static final String MINIO_ERROR_MSG = "An internal file storage error occurred";
 
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleNotFound(NotFoundException ex) {
+    ResponseEntity<ApiErrorResponse> handleNotFound(NotFoundException ex) {
         log.debug("Not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiErrorResponse.now(ex.getMessage()));
     }
 
 
     @ExceptionHandler(FileStorageException.class)
-    public ResponseEntity<ApiErrorResponse> handleStorageError(FileStorageException ex) {
+    ResponseEntity<ApiErrorResponse> handleStorageError(FileStorageException ex) {
         log.error("Storage error", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiErrorResponse.now(MINIO_ERROR_MSG));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+    ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
         log.debug("Method argument not valid: {}", ex.getMessage(), ex);
         String details = ex.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
