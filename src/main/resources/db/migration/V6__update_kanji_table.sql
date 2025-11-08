@@ -1,0 +1,1 @@
+ALTER TABLE wanikani.kanji ADD COLUMN IF NOT EXISTS drawing_data_count integer;

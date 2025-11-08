@@ -25,4 +25,6 @@ interface KanjiRepository extends JpaRepository<Kanji, Long> {
     List<Kanji> findAllNotInCardsForUser(@Param("userId") Long userId, @Param("level") int level, Pageable pageable);
 
     Optional<Kanji> findByUuid(UUID uuid);
+
+    List<Kanji> findByDrawingDataCount(int strokeNumber);
 }
