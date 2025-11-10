@@ -40,4 +40,7 @@ public class Kanji extends AbstractUuidEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "svg_data", columnDefinition = "jsonb")
     private String svgData;
+
+    @Column(name = "drawing_data_count")
+    private Integer drawingDataCount;
 }
