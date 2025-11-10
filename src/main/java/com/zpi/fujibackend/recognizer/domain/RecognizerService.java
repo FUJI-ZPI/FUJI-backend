@@ -91,31 +91,24 @@ class RecognizerService implements RecognizerFacade {
                                                              List<ReferenceKanjiDto> allCandidateKanjis) {
 
         List<RecognitionCandidate> fineCandidates = new ArrayList<>();
-        int count = Math.min(coarseCandidates.size(), 100); // Tylko Top 100
+        int count = Math.min(coarseCandidates.size(), 100);
 
         for (int i = 0; i < count; i++) {
-            // Pobierz indeks kandydata z listy 'allCandidateKanjis'
             int refIndex = coarseCandidates.get(i).referenceIndex();
             ReferenceKanjiDto refKanji = allCandidateKanjis.get(refIndex);
             List<List<List<Double>>> refFeatures = refKanji.drawingData();
-            ;
 
-            // Krok 3 (ponownie): Znajdź optymalne dopasowanie,
-            // tym razem używając lepszej metryki 'InitialDistance'
             int[] optimalStrokeMap = findOptimalStrokeMap(
                     refFeatures,
                     normalizedUserStrokes,
                     this::calculateInitialStrokeDistance // Lepsza metryka do mapowania
             );
 
-            // Oblicz końcowy, precyzyjny dystans
             double finalDistance = calculateDetailedTotalDistance(
                     refFeatures,
                     normalizedUserStrokes,
                     optimalStrokeMap
             );
-
-            // 'calculateDetailedTotalDistance' już zawiera normalizację przez liczbę kresek
 
             fineCandidates.add(new RecognitionCandidate(refIndex, refKanji.uuid(), refKanji.character(), finalDistance));
         }
@@ -149,7 +142,6 @@ class RecognizerService implements RecognizerFacade {
                             double dji = strokeDistanceMetric.apply(patterns.pattern1().get(i), patterns.pattern2().get(strokeMap[j]));
 
                             if (dji + dij < dii + djj) {
-                                // Tak, zamiana jest lepsza!
                                 int tempMapJ = strokeMap[j];
                                 strokeMap[j] = strokeMap[i];
                                 strokeMap[i] = tempMapJ;
@@ -200,10 +192,9 @@ class RecognizerService implements RecognizerFacade {
         SortedPatternPair patterns = sortPatternsByStrokeCount(pattern1, pattern2);
         double totalDistance = 0;
 
-        // Przechodzimy przez mapę. Długość mapy = pattern1StrokeCount
         for (int i = 0; i < patterns.pattern1StrokeCount(); i++) {
-            int j = strokeMap[i]; // j to pasujący indeks z pattern2
-            if (j != -1) { // -1 oznacza brak pary (co się nie zdarzy przy n==m)
+            int j = strokeMap[i];
+            if (j != -1) {
                 totalDistance += metric.apply(
                         patterns.pattern1().get(i),
                         patterns.pattern2().get(j)

@@ -6,9 +6,6 @@ import java.util.List;
 
 import static java.lang.Math.abs;
 
-// Wymagana jest klasa/record Point z metodą distanceTo(Point other) i getterami x(), y()
-// public record Point(double x, double y) {}
-
 public class KanjiAccuracy {
 
     public record KanjiAccuracyResult(double overallAccuracy, List<Double> strokeAccuracies) {}
@@ -37,10 +34,6 @@ public class KanjiAccuracy {
         private static final double WEIGHT_HYBRID_LENGTH = 0.05;
 
         private static final double LENGTH_ERROR_TOLERANCE = 0.25;
-
-        // ===========================================================
-        // MAIN: kanji accuracy
-        // ===========================================================
 
         public static KanjiAccuracyResult calculateKanjiAccuracy(
                 List<List<List<Double>>> userKanji,
@@ -72,10 +65,6 @@ public class KanjiAccuracy {
 
             return new KanjiAccuracyResult(totalScore / referenceKanji.size(), strokeScores);
         }
-
-        // ===========================================================
-        // stroke score
-        // ===========================================================
 
         private static double calculateStrokeScore(List<List<Double>> user, List<List<Double>> ref) {
 
@@ -131,10 +120,6 @@ public class KanjiAccuracy {
             return WEIGHT_HYBRID_DTW_SHAPE * dtwScore +
                     WEIGHT_HYBRID_LENGTH * lengthScore;
         }
-
-        // ===========================================================
-        // helpers
-        // ===========================================================
 
         private static double distance(List<Double> p1, List<Double> p2) {
             double dx = p1.get(0) - p2.get(0);
