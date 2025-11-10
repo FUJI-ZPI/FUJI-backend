@@ -1,7 +1,7 @@
 package com.zpi.fujibackend.vocabulary.domain;
 
 import com.zpi.fujibackend.common.exception.NotFoundException;
-import com.zpi.fujibackend.config.converter.JsonNodeConverter;
+import com.zpi.fujibackend.config.converter.JsonConverter;
 import com.zpi.fujibackend.vocabulary.VocabularyFacade;
 import com.zpi.fujibackend.vocabulary.dto.VocabularyDetailsDto;
 import com.zpi.fujibackend.vocabulary.dto.VocabularyDto;
@@ -36,7 +36,7 @@ class VocabularyService implements VocabularyFacade {
                                 v.getLevel(),
                                 v.getCharacters(),
                                 v.getUnicodeCharacters(),
-                                JsonNodeConverter.convertToDto(v.getDocument(), WanikaniVocabularyJsonDto.class)
+                                JsonConverter.convertToDto(v.getDocument(), WanikaniVocabularyJsonDto.class)
                         ))
                 .orElseThrow(() -> new NotFoundException("No Vocabulary for UUID: " + uuid));
 
