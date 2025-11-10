@@ -1,8 +1,9 @@
 package com.zpi.fujibackend.kanji.dto;
 
-import com.zpi.fujibackend.config.converter.JsonNodeConverter;
+import com.zpi.fujibackend.config.converter.JsonConverter;
 import com.zpi.fujibackend.kanji.domain.Kanji;
 
+import java.util.List;
 import java.util.UUID;
 
 public record KanjiDetailDto(
@@ -10,7 +11,8 @@ public record KanjiDetailDto(
         int level,
         String character,
         String unicodeCharacter,
-        WanikaniKanjiJsonDto details
+        WanikaniKanjiJsonDto details,
+        List<String> svgPath
 ) {
     public static KanjiDetailDto toDto(Kanji kanji) {
         return new KanjiDetailDto(
@@ -18,7 +20,9 @@ public record KanjiDetailDto(
                 kanji.getLevel(),
                 kanji.getCharacter(),
                 kanji.getUnicodeCharacter(),
-                JsonNodeConverter.convertToDto(kanji.getDocument(), WanikaniKanjiJsonDto.class)
+                JsonConverter.convertToDto(kanji.getDocument(), WanikaniKanjiJsonDto.class),
+                JsonConverter.convertJsonStringToListOfString(kanji.getSvgData())
+
         );
     }
 }
