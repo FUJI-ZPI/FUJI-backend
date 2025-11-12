@@ -22,9 +22,7 @@ class RadicalService implements RadicalFacade {
     @Override
     public List<RadicalDto> getRadicalByLevel(int level) {
         return radicalRepository.findByLevel(level).stream()
-                .map(
-                        radical -> new RadicalDto(radical.getUuid(), radical.getCharacter())
-                )
+                .map(radical -> new RadicalDto(radical.getUuid(), radical.getCharacter()))
                 .toList();
     }
 
