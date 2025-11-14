@@ -21,10 +21,8 @@ class VocabularyController {
     private final VocabularyFacade vocabularyFacade;
 
     private static final class Routes {
-
         private static final String LEVEL = "/{level}";
         private static final String DETAILS = "/details/{uuid}";
-
     }
 
     @GetMapping(Routes.LEVEL)

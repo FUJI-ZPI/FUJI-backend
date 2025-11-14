@@ -2,7 +2,10 @@ package com.zpi.fujibackend.kanji.dto;
 
 import com.zpi.fujibackend.config.converter.JsonConverter;
 import com.zpi.fujibackend.kanji.domain.Kanji;
+import com.zpi.fujibackend.radical.dto.RadicalDto;
+import com.zpi.fujibackend.vocabulary.dto.VocabularyDto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,7 +15,10 @@ public record KanjiDetailDto(
         String character,
         String unicodeCharacter,
         WanikaniKanjiJsonDto details,
-        List<String> svgPath
+        List<String> svgPath,
+        List<RadicalDto> componentRadicals,
+        List<VocabularyDto> relatedVocabulary,
+        List<KanjiDto> visuallySimilarKanji
 ) {
     public static KanjiDetailDto toDto(Kanji kanji) {
         return new KanjiDetailDto(
@@ -21,8 +27,10 @@ public record KanjiDetailDto(
                 kanji.getCharacter(),
                 kanji.getUnicodeCharacter(),
                 JsonConverter.convertToDto(kanji.getDocument(), WanikaniKanjiJsonDto.class),
-                JsonConverter.convertJsonStringToListOfString(kanji.getSvgData())
-
+                JsonConverter.convertJsonStringToListOfString(kanji.getSvgData()),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList()
         );
     }
 }

@@ -17,7 +17,7 @@ public record WanikaniKanjiJsonDto(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    record Data(
+    public record Data(
             String slug,
             Integer level,
             List<Meaning> meanings,

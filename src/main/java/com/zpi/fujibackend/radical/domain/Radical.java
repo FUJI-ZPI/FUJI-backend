@@ -1,6 +1,5 @@
 package com.zpi.fujibackend.radical.domain;
 
-
 import com.zpi.fujibackend.common.entity.AbstractUuidEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,13 +10,12 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "radicals", schema = "wanikani")
-public class Radical extends AbstractUuidEntity {
+class Radical extends AbstractUuidEntity {
 
 
     @Column(name = "level", nullable = false)
