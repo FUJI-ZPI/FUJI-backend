@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import java.util.List;
 
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record WanikaniVocabularyJsonDto(
         int id,
@@ -40,7 +39,7 @@ public record WanikaniVocabularyJsonDto(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public record Meaning(
+    record Meaning(
             String meaning,
             Boolean primary,
             Boolean acceptedAnswer
@@ -49,7 +48,7 @@ public record WanikaniVocabularyJsonDto(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public record Reading(
+    record Reading(
             Boolean primary,
             String reading,
             Boolean acceptedAnswer
@@ -57,14 +56,14 @@ public record WanikaniVocabularyJsonDto(
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public record ContextSentence(
+    record ContextSentence(
             String en,
             String ja
     ) {
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public record AuxiliaryMeaning(
+    record AuxiliaryMeaning(
             String type,
             String meaning
     ) {
@@ -72,7 +71,7 @@ public record WanikaniVocabularyJsonDto(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public record PronunciationAudio(
+    record PronunciationAudio(
             String url,
             Metadata metadata,
             String contentType,
@@ -82,7 +81,7 @@ public record WanikaniVocabularyJsonDto(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public record Metadata(
+    record Metadata(
             String gender,
             Integer sourceId,
             String pronunciation,
