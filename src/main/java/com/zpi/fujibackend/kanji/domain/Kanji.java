@@ -12,6 +12,8 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,7 +37,7 @@ public class Kanji extends AbstractUuidEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "drawing_data", columnDefinition = "jsonb")
-    private String drawingData;
+    private List<List<List<Double>>> drawingData;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "svg_data", columnDefinition = "jsonb")
