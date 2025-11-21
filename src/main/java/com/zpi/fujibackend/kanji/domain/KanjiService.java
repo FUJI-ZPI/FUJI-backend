@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,7 +63,8 @@ class KanjiService implements KanjiFacade {
                 svgPath,
                 componentRadicals,
                 relatedVocabulary,
-                similarKanji
+                similarKanji,
+                Collections.emptyList()
         );
     }
 
@@ -125,15 +127,16 @@ class KanjiService implements KanjiFacade {
     }
 
     @Override
-    public Optional<Kanji> getKanjiByUuid(UUID uuid) {
-        return kanjiRepository.findByUuid(uuid);
+    public Kanji getKanjiByUuid(UUID uuid) {
+        return kanjiRepository.findByUuid(uuid)
+                .orElseThrow(() -> new NotFoundException("No Kanji for UUID: " + uuid));
     }
 
     @Override
     public List<ReferenceKanjiDto> getKanjiByStrokeNumber(int strokeNumber) {
         return kanjiRepository.findByDrawingDataCount(strokeNumber).stream()
                 .map(kanji ->  {
-                    final List<List<List<Double>>> points = parseDrawingData(kanji.getDrawingData());
+                    final List<List<List<Double>>> points = kanji.getDrawingData();
                     return new ReferenceKanjiDto(kanji.getUuid(), kanji.getCharacter(), points);
                 })
                 .toList();

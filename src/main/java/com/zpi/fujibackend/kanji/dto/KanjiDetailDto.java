@@ -1,5 +1,6 @@
 package com.zpi.fujibackend.kanji.dto;
 
+import com.zpi.fujibackend.algorithm.KanjiNormalizer;
 import com.zpi.fujibackend.config.converter.JsonConverter;
 import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.radical.dto.RadicalDto;
@@ -18,9 +19,12 @@ public record KanjiDetailDto(
         List<String> svgPath,
         List<RadicalDto> componentRadicals,
         List<VocabularyDto> relatedVocabulary,
-        List<KanjiDto> visuallySimilarKanji
+        List<KanjiDto> visuallySimilarKanji,
+        List<List<List<Double>>> referenceStrokes
 ) {
     public static KanjiDetailDto toDto(Kanji kanji) {
+        List<List<List<Double>>> normalizedStrokes =
+                KanjiNormalizer.momentNormalize(kanji.getDrawingData());
         return new KanjiDetailDto(
                 kanji.getUuid(),
                 kanji.getLevel(),
@@ -30,7 +34,8 @@ public record KanjiDetailDto(
                 JsonConverter.convertJsonStringToListOfString(kanji.getSvgData()),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList()
+                Collections.emptyList(),
+                normalizedStrokes
         );
     }
 }
