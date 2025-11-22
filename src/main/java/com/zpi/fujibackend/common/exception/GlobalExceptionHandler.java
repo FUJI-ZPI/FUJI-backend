@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -34,6 +35,10 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiErrorResponse.now(ex.getMessage()));
     }
 
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Object> handleNoResourceFound(NoResourceFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 
     @ExceptionHandler(FileStorageException.class)
     ResponseEntity<ApiErrorResponse> handleStorageError(FileStorageException ex) {
