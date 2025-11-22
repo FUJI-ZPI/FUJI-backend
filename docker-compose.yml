@@ -23,7 +23,7 @@ services:
       - postgresdb
 
   postgresdb:
-    image: postgres:16
+    image: postgres:17
     environment:
       POSTGRES_USER: ${SERVICE_DB_LOGIN}
       POSTGRES_PASSWORD: ${SERVICE_DB_PASSWORD}

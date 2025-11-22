@@ -17,7 +17,6 @@ class AuthController {
 
     private static final class Routes {
         private static final String LOGIN = "/login";
-        private static final String LOGIN_MOCK = "/login-mock";
         private static final String REFRESH = "/refresh";
     }
 
@@ -26,12 +25,6 @@ class AuthController {
     @PostMapping(Routes.LOGIN)
     TokenDto authenticateWithGoogle(@RequestBody @Valid final TokenVerificationForm form) {
         return authFacade.generateToken(form.token());
-    }
-
-    @PostMapping(Routes.LOGIN_MOCK)
-    TokenDto authenticateWithGoogleMock() {
-        final String googleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJlbWFpbCI6Im15QGVtYWlsIn0.qqei_kFbDs8ALnBaOwqXIDg7n-F7sfp4FT_yXmDYLy0";
-        return authFacade.generateTokenMock(googleToken);
     }
 
     @PostMapping(Routes.REFRESH)
