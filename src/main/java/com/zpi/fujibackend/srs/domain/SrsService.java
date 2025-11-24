@@ -1,11 +1,14 @@
 package com.zpi.fujibackend.srs.domain;
 
+import com.zpi.fujibackend.common.exception.NotFoundException;
 import com.zpi.fujibackend.kanji.KanjiFacade;
 import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.srs.SrsFacade;
+import com.zpi.fujibackend.srs.dto.CardDto;
 import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.user.domain.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -19,20 +22,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class SrsService implements SrsFacade {
-    private final CardRepository cardRepository;
+class SrsService implements SrsFacade {
 
+    private final static int[] INTERVALS_IN_HOURS = {0, 1, 2, 4, 8, 24, 48, 168, 336, 672, 2688};
+
+    private final CardRepository cardRepository;
     private final KanjiFacade kanjiFacade;
     private final UserFacade userFacade;
 
-    private final static int[] INTERVALS = {4, 8, 24, 48, 168, 336, 672, 2688};
-
     @Override
-    public List<KanjiDetailDto> getReviewBatch(int size) {
+    public List<CardDto> getReviewBatch(int size) {
         User currentUser = userFacade.getCurrentUser();
         return cardRepository.findDueForUser(currentUser.getId(), Instant.now(), PageRequest.of(0, size))
                 .stream()
-                .map(card -> KanjiDetailDto.toDto(card.getKanji()))
+                .map(card -> new CardDto(card.getUuid(), KanjiDetailDto.toDto(card.getKanji())))
                 .toList();
     }
 
@@ -42,41 +45,44 @@ public class SrsService implements SrsFacade {
     }
 
     @Override
-    public void increaseFamiliarity(UUID uuid) {
-        Card card = cardRepository.findByUuid(uuid);
-        changeFamiliarity(card, Math.min(card.getFamiliarity() + 1, INTERVALS.length - 1));
+    public Card increaseFamiliarity(UUID kanjiUuid) {
+        User user = userFacade.getCurrentUser();
+        Kanji kanji = kanjiFacade.getKanjiByUuid(kanjiUuid);
+        Card card = cardRepository.findByUserAndKanji(user, kanji)
+                .orElseThrow(() -> new NotFoundException("No Card found"));
+        return changeFamiliarity(card, Math.min(card.getFamiliarity() + 1, INTERVALS_IN_HOURS.length - 1));
     }
 
     @Override
-    public void decreaseFamiliarity(UUID uuid) {
-        Card card = cardRepository.findByUuid(uuid);
-        changeFamiliarity(card, Math.max(card.getFamiliarity() - 1, 0));
+    public Card decreaseFamiliarity(UUID kanjiUuid) {
+        User user = userFacade.getCurrentUser();
+        Kanji kanji = kanjiFacade.getKanjiByUuid(kanjiUuid);
+        Card card = cardRepository.findByUserAndKanji(user, kanji)
+                .orElseThrow(() -> new NotFoundException("No Card found"));
+        return changeFamiliarity(card, Math.max(card.getFamiliarity() - 1, 0));
     }
 
-    private void changeFamiliarity(Card card, int newFamiliarity) {
+    private Card changeFamiliarity(Card card, int newFamiliarity) {
         card.setFamiliarity(newFamiliarity);
-        card.setIntervalHours(INTERVALS[newFamiliarity]);
+        card.setIntervalHours(INTERVALS_IN_HOURS[newFamiliarity]);
         card.setLastReviewed(Instant.now());
-        card.setNextDue(Instant.now().plus(INTERVALS[newFamiliarity], ChronoUnit.HOURS));
+        card.setNextDue(Instant.now().plus(INTERVALS_IN_HOURS[newFamiliarity], ChronoUnit.HOURS));
+        return cardRepository.save(card);
     }
 
     @Override
-    public Boolean addCard(UUID kanjiUuid) {
-        Kanji kanji = kanjiFacade.getKanjiByUuid(kanjiUuid).orElse(null);
-
-        if (kanji == null) {
-            return false;
-        }
-
+    @Transactional
+    public Card addCard(UUID kanjiUuid) {
+        Kanji kanji = kanjiFacade.getKanjiByUuid(kanjiUuid);
+        User user = userFacade.getCurrentUser();
         Card card = new Card(
                 kanji,
-                userFacade.getCurrentUser(),
+                user,
                 0,
-                INTERVALS[0],
+                INTERVALS_IN_HOURS[0],
                 Instant.now(),
-                Instant.now().plus(INTERVALS[0], ChronoUnit.HOURS)
+                Instant.now().plus(INTERVALS_IN_HOURS[0], ChronoUnit.HOURS)
         );
-        cardRepository.save(card);
-        return true;
+        return cardRepository.save(card);
     }
 }
