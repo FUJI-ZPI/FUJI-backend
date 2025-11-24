@@ -18,13 +18,13 @@ class NotificationTestController {
 
 
     @PostMapping("/send-current-user")
-    public String sendTestNotification(@RequestBody @Valid TestNotificationRequest request) {
+    public String sendTestNotificationCurrent(@RequestBody @Valid TestNotificationRequest request) {
         notificationFacade.sendNotificationToCurrentUser(request.title(), request.body());
         return "Success [Current] :)";
     }
 
     @PostMapping("/send-all")
-    public String sendTestNotification() {
+    public String sendTestNotificationAll() {
         notificationFacade.sendDailyNotificationToAllUsers();
         return "Success [All] :)";
     }
