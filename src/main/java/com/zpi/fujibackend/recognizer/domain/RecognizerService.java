@@ -262,7 +262,7 @@ class RecognizerService implements RecognizerFacade {
     private double calculateWholeStrokeDistance(List<List<Double>> stroke1, List<List<Double>> stroke2) {
         SortedStrokePair strokes = sortStrokesByPointCount(stroke1, stroke2);
         if (strokes.shorterStrokePointCount() == 0) {
-         return 0;
+            return 0;
         }
 
         double dist = 0;

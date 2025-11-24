@@ -132,7 +132,7 @@ class KanjiService implements KanjiFacade {
     @Override
     public List<ReferenceKanjiDto> getKanjiByStrokeNumber(int strokeNumber) {
         return kanjiRepository.findByDrawingDataCount(strokeNumber).stream()
-                .map(kanji ->  {
+                .map(kanji -> {
                     final List<List<List<Double>>> points = parseDrawingData(kanji.getDrawingData());
                     return new ReferenceKanjiDto(kanji.getUuid(), kanji.getCharacter(), points);
                 })
@@ -142,7 +142,8 @@ class KanjiService implements KanjiFacade {
     private List<List<List<Double>>> parseDrawingData(String json) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(json, new TypeReference<>() {});
+            return mapper.readValue(json, new TypeReference<>() {
+            });
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error parsing drawingData JSON", e);
         }

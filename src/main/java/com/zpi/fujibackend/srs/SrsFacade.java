@@ -7,9 +7,12 @@ import java.util.UUID;
 
 public interface SrsFacade {
     List<KanjiDetailDto> getReviewBatch(int size);
+
     List<KanjiDetailDto> getLessonBatch(int size);
 
     void increaseFamiliarity(UUID uuid);
+
     void decreaseFamiliarity(UUID uuid);
+
     Boolean addCard(UUID kanjiUuid);
 }

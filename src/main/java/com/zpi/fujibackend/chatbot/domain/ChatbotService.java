@@ -58,7 +58,7 @@ class ChatbotService implements ChatbotFacade {
 
         final String fullPrompt = request.messages().stream()
                 .sorted(Comparator.comparing(ChatbotHistorySingleMessage::dateTime).reversed())
-                                .map(ChatbotHistorySingleMessage::toConversationString)
+                .map(ChatbotHistorySingleMessage::toConversationString)
                 .limit(MAX_HISTORY_MESSAGES)
                 .collect(Collectors.joining("\n"));
 

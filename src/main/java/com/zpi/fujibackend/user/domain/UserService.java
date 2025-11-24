@@ -1,11 +1,11 @@
 package com.zpi.fujibackend.user.domain;
 
 import com.zpi.fujibackend.user.UserFacade;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -44,6 +44,12 @@ class UserService implements UserFacade {
     @Override
     public Integer getCurrentUserLevel() {
         return getCurrentUser().getLevel();
+    }
+
+    @Override
+    @Transactional
+    public void setCurrentUserFcmToken(String fcmToken) {
+        userRepository.updateFcmTokenById(getCurrentUserId(), fcmToken);
     }
 
     private User getUserByUuid(final UUID uuid) {

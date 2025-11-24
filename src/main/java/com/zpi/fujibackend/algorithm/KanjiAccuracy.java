@@ -8,7 +8,8 @@ import static java.lang.Math.abs;
 
 public class KanjiAccuracy {
 
-    public record KanjiAccuracyResult(double overallAccuracy, List<Double> strokeAccuracies) {}
+    public record KanjiAccuracyResult(double overallAccuracy, List<Double> strokeAccuracies) {
+    }
 
     public static class KanjiComparator {
 

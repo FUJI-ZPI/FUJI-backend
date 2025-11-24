@@ -28,6 +28,8 @@ public class User extends AbstractUuidEntity {
     @Column(nullable = false)
     private Integer level;
 
+    private String fcmToken;
+
     public User(final String email) {
         this.email = email;
         created = OffsetDateTime.now();
