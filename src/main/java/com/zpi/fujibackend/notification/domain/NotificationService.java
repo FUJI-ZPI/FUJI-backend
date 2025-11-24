@@ -22,7 +22,7 @@ class NotificationService implements NotificationFacade {
     private final UserFacade userFacade;
     private final SrsFacade srsFacade;
 
-    private final int REVIEW_THRESHOLD = 0;
+    private static final int REVIEW_THRESHOLD = 0;
 
     @Override
     public void sendNotificationToCurrentUser(String title, String body) {
