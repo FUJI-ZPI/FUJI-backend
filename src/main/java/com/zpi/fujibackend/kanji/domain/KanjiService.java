@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,7 +63,8 @@ class KanjiService implements KanjiFacade {
                 svgPath,
                 componentRadicals,
                 relatedVocabulary,
-                similarKanji
+                similarKanji,
+                Collections.emptyList()
         );
     }
 
@@ -132,8 +134,8 @@ class KanjiService implements KanjiFacade {
     @Override
     public List<ReferenceKanjiDto> getKanjiByStrokeNumber(int strokeNumber) {
         return kanjiRepository.findByDrawingDataCount(strokeNumber).stream()
-                .map(kanji -> {
-                    final List<List<List<Double>>> points = parseDrawingData(kanji.getDrawingData());
+                .map(kanji ->  {
+                    final List<List<List<Double>>> points = kanji.getDrawingData();
                     return new ReferenceKanjiDto(kanji.getUuid(), kanji.getCharacter(), points);
                 })
                 .toList();
@@ -142,8 +144,7 @@ class KanjiService implements KanjiFacade {
     private List<List<List<Double>>> parseDrawingData(String json) {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(json, new TypeReference<>() {
-            });
+            return mapper.readValue(json, new TypeReference<>() {});
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error parsing drawingData JSON", e);
         }

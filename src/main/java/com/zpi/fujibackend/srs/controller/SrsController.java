@@ -2,11 +2,14 @@ package com.zpi.fujibackend.srs.controller;
 
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.srs.SrsFacade;
+import com.zpi.fujibackend.srs.dto.CardDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/srs")
@@ -15,35 +18,17 @@ class SrsController {
     private final SrsFacade srsFacade;
 
     private final static class Routes {
-        public static final String REVIEW_BATCH = "/review-batch";
-        public static final String LESSON_BATCH = "/lesson-batch";
-        public static final String INCREASE_FAMILIARITY = "/increase-familiarity";
-        public static final String DECREASE_FAMILIARITY = "/decrease-familiarity";
-        public static final String ADD_CARD = "/add-card";
+        private static final String REVIEW_BATCH = "/review-batch";
+        private static final String LESSON_BATCH = "/lesson-batch";
     }
 
     @GetMapping(Routes.REVIEW_BATCH)
-    List<KanjiDetailDto> getReviewBatch(@RequestParam(defaultValue = "30") int size) {
+    List<CardDto> getReviewBatch(@RequestParam(defaultValue = "30") int size) {
         return srsFacade.getReviewBatchForCurrentUser(size);
     }
 
     @GetMapping(Routes.LESSON_BATCH)
     List<KanjiDetailDto> getLessonBatch(@RequestParam(defaultValue = "5") int size) {
         return srsFacade.getLessonBatchForCurrentUser(size);
-    }
-
-    @PostMapping(Routes.INCREASE_FAMILIARITY)
-    void increaseFamiliarity(@RequestParam UUID uuid) {
-        srsFacade.increaseFamiliarity(uuid);
-    }
-
-    @PostMapping(Routes.DECREASE_FAMILIARITY)
-    void decreaseFamiliarity(@RequestParam UUID uuid) {
-        srsFacade.decreaseFamiliarity(uuid);
-    }
-
-    @PutMapping(Routes.ADD_CARD)
-    void addCard(@RequestParam UUID kanjiUuid) {
-        srsFacade.addCard(kanjiUuid);
     }
 }

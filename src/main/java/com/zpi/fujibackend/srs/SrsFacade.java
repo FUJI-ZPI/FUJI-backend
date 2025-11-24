@@ -2,20 +2,23 @@ package com.zpi.fujibackend.srs;
 
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.user.domain.User;
+import com.zpi.fujibackend.srs.domain.Card;
+import com.zpi.fujibackend.srs.dto.CardDto;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface SrsFacade {
-    List<KanjiDetailDto> getReviewBatchForCurrentUser(int size);
+    List<CardDto> getReviewBatchForCurrentUser(int size);
 
-    List<KanjiDetailDto> getReviewBatch(int size, User user);
+    List<CardDto> getReviewBatch(int size, User user);
 
     List<KanjiDetailDto> getLessonBatchForCurrentUser(int size);
 
-    void increaseFamiliarity(UUID uuid);
+    Card increaseFamiliarity(UUID uuid);
 
-    void decreaseFamiliarity(UUID uuid);
+    Card decreaseFamiliarity(UUID uuid);
 
-    Boolean addCard(UUID kanjiUuid);
+    Card addCard(UUID kanjiUuid);
+
 }
