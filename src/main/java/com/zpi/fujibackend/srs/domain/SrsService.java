@@ -25,19 +25,24 @@ public class SrsService implements SrsFacade {
     private final KanjiFacade kanjiFacade;
     private final UserFacade userFacade;
 
-    private final static int[] INTERVALS = {4, 8, 24, 48, 168, 336, 672, 2688};
+    private static final int[] INTERVALS = {4, 8, 24, 48, 168, 336, 672, 2688};
 
     @Override
-    public List<KanjiDetailDto> getReviewBatch(int size) {
+    public List<KanjiDetailDto> getReviewBatchForCurrentUser(int size) {
         User currentUser = userFacade.getCurrentUser();
-        return cardRepository.findDueForUser(currentUser.getId(), Instant.now(), PageRequest.of(0, size))
+        return getReviewBatch(size, currentUser);
+    }
+
+    @Override
+    public List<KanjiDetailDto> getReviewBatch(int size, User user) {
+        return cardRepository.findDueForUser(user.getId(), Instant.now(), PageRequest.of(0, size))
                 .stream()
                 .map(card -> KanjiDetailDto.toDto(card.getKanji()))
                 .toList();
     }
 
     @Override
-    public List<KanjiDetailDto> getLessonBatch(int size) {
+    public List<KanjiDetailDto> getLessonBatchForCurrentUser(int size) {
         return kanjiFacade.getKanjisNotInCards(size);
     }
 

@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -52,9 +53,15 @@ class UserService implements UserFacade {
         userRepository.updateFcmTokenById(getCurrentUserId(), fcmToken);
     }
 
+    @Override
+    public List<User> findAllUsersByFcmTokenIsNotNull() {
+        return userRepository.findAllByFcmTokenIsNotNull();
+    }
+
     private User getUserByUuid(final UUID uuid) {
         return userRepository.findByUuid(uuid).orElseThrow(
                 () -> new RuntimeException("User with uuid " + uuid + " not found")
         );
     }
+
 }
