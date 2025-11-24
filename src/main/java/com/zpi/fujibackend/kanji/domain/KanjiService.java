@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -127,8 +126,9 @@ class KanjiService implements KanjiFacade {
     }
 
     @Override
-    public Optional<Kanji> getKanjiByUuid(UUID uuid) {
-        return kanjiRepository.findByUuid(uuid);
+    public Kanji getKanjiByUuid(UUID uuid) {
+        return kanjiRepository.findByUuid(uuid)
+                .orElseThrow(() -> new NotFoundException("No Kanji for UUID: " + uuid));
     }
 
     @Override

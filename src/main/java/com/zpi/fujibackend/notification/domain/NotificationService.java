@@ -4,7 +4,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.notification.NotificationFacade;
 import com.zpi.fujibackend.srs.SrsFacade;
 import com.zpi.fujibackend.user.UserFacade;
@@ -35,7 +34,7 @@ class NotificationService implements NotificationFacade {
     public void sendDailyNotificationToAllUsers() {
         List<User> users = userFacade.findAllUsersByFcmTokenIsNotNull();
         users.forEach(user -> {
-            List<KanjiDetailDto> reviewsTodoList = srsFacade.getReviewBatch(REVIEW_THRESHOLD, user);
+            List<?> reviewsTodoList = srsFacade.getReviewBatch(30, user);
             if (reviewsTodoList.size() >= REVIEW_THRESHOLD) {
                 sendNotification(user, "Daily Reminder", "Time to practice your Japanese!");
             }
