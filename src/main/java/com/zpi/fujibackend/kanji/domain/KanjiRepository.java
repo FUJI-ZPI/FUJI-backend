@@ -16,12 +16,12 @@ interface KanjiRepository extends JpaRepository<Kanji, Long> {
     Optional<Kanji> getByUuid(UUID uuid);
 
     @Query("""
-    SELECT k
-    FROM Kanji k
-    LEFT JOIN Card c ON c.kanji = k AND c.user.id = :userId
-    WHERE c.id IS NULL
-      AND k.level = :level
-    """)
+            SELECT k
+            FROM Kanji k
+            LEFT JOIN Card c ON c.kanji = k AND c.user.id = :userId
+            WHERE c.id IS NULL
+              AND k.level = :level
+            """)
     List<Kanji> findAllNotInCardsForUser(@Param("userId") Long userId, @Param("level") int level, Pageable pageable);
 
     Optional<Kanji> findByUuid(UUID uuid);

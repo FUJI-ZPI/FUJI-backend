@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
-class GoogleTokenVerifierService{
+class GoogleTokenVerifierService {
 
     @Value("${google.clientId}")
     private String googleClientId;

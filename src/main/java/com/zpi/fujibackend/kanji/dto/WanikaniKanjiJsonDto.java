@@ -1,4 +1,3 @@
-
 package com.zpi.fujibackend.kanji.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;

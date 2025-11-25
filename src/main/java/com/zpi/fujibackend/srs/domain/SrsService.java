@@ -8,11 +8,11 @@ import com.zpi.fujibackend.srs.SrsFacade;
 import com.zpi.fujibackend.srs.dto.CardDto;
 import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.user.domain.User;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -24,23 +24,31 @@ import java.util.UUID;
 @Slf4j
 class SrsService implements SrsFacade {
 
-    private final static int[] INTERVALS_IN_HOURS = {0, 1, 2, 4, 8, 24, 48, 168, 336, 672, 2688};
+    private static final int[] INTERVALS_IN_HOURS = {0, 1, 2, 4, 8, 24, 48, 168, 336, 672, 2688};
 
     private final CardRepository cardRepository;
+
     private final KanjiFacade kanjiFacade;
     private final UserFacade userFacade;
 
+
     @Override
-    public List<CardDto> getReviewBatch(int size) {
+    public List<CardDto> getReviewBatchForCurrentUser(int size) {
         User currentUser = userFacade.getCurrentUser();
-        return cardRepository.findDueForUser(currentUser.getId(), Instant.now(), PageRequest.of(0, size))
+        return getReviewBatch(size, currentUser);
+    }
+
+    @Override
+    public List<CardDto> getReviewBatch(int size, User user) {
+        return cardRepository.findDueForUser(user.getId(), Instant.now(), PageRequest.of(0, size))
                 .stream()
                 .map(card -> new CardDto(card.getUuid(), KanjiDetailDto.toDto(card.getKanji())))
                 .toList();
     }
 
+
     @Override
-    public List<KanjiDetailDto> getLessonBatch(int size) {
+    public List<KanjiDetailDto> getLessonBatchForCurrentUser(int size) {
         return kanjiFacade.getKanjisNotInCards(size);
     }
 

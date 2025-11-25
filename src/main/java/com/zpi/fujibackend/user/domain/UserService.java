@@ -1,12 +1,13 @@
 package com.zpi.fujibackend.user.domain;
 
 import com.zpi.fujibackend.user.UserFacade;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -46,9 +47,21 @@ class UserService implements UserFacade {
         return getCurrentUser().getLevel();
     }
 
+    @Override
+    @Transactional
+    public void setCurrentUserFcmToken(String fcmToken) {
+        userRepository.updateFcmTokenById(getCurrentUserId(), fcmToken);
+    }
+
+    @Override
+    public List<User> findAllUsersByFcmTokenIsNotNull() {
+        return userRepository.findAllByFcmTokenIsNotNull();
+    }
+
     private User getUserByUuid(final UUID uuid) {
         return userRepository.findByUuid(uuid).orElseThrow(
                 () -> new RuntimeException("User with uuid " + uuid + " not found")
         );
     }
+
 }

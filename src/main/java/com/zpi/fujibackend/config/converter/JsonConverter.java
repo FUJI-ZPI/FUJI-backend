@@ -27,7 +27,8 @@ public class JsonConverter {
         }
 
         try {
-            return OBJECT_MAPPER.readValue(jsonString, new TypeReference<>() {});
+            return OBJECT_MAPPER.readValue(jsonString, new TypeReference<>() {
+            });
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Failed to parse JSON string: " + jsonString, e);
         }
