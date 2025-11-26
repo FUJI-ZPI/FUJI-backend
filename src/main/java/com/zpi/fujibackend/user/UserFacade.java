@@ -7,8 +7,5 @@ import java.util.UUID;
 public interface UserFacade {
     UUID findOrCreateByEmail(final String email);
     User getCurrentUser();
-    void increaseUserLevel();
     Long getCurrentUserId();
-
-    Integer getCurrentUserLevel();
 }

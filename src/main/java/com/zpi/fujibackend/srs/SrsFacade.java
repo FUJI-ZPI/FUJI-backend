@@ -18,4 +18,5 @@ public interface SrsFacade {
 
     Card addCard(UUID kanjiUuid);
 
+    long countMaxFamiliarityCards();
 }

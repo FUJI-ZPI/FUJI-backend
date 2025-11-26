@@ -61,4 +61,5 @@ interface ActivityRepository extends JpaRepository<Activity, Long> {
           AND c.user = :user
     """)
     Optional<ActivityPlaybackDetails> findPlaybackDetails(@Param("uuid") UUID uuid, @Param("user") User user);
+
 }

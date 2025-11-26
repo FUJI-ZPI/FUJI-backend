@@ -30,20 +30,8 @@ class UserService implements UserFacade {
     }
 
     @Override
-    public void increaseUserLevel() {
-        User currentUser = getCurrentUser();
-        currentUser.setLevel(currentUser.getLevel() + 1);
-        userRepository.save(currentUser);
-    }
-
-    @Override
     public Long getCurrentUserId() {
         return getCurrentUser().getId();
-    }
-
-    @Override
-    public Integer getCurrentUserLevel() {
-        return getCurrentUser().getLevel();
     }
 
     private User getUserByUuid(final UUID uuid) {

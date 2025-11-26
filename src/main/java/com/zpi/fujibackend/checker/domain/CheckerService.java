@@ -46,7 +46,7 @@ class CheckerService implements CheckerFacade {
 
         Card card = updateSrsState(kanji.getUuid(), form.isLearningSession(), isSuccess);
         if (card != null) {
-            saveActivity(card, form, accuracyResult);
+            saveActivity(card, form, accuracyResult, isSuccess);
         }
 
         return accuracyResult;
@@ -63,7 +63,7 @@ class CheckerService implements CheckerFacade {
                 : srsFacade.decreaseFamiliarity(kanjiUuid);
     }
 
-    private void saveActivity(Card card, CheckKanjiForm form, KanjiAccuracy.KanjiAccuracyResult result) {
+    private void saveActivity(Card card, CheckKanjiForm form, KanjiAccuracy.KanjiAccuracyResult result, boolean isSuccess) {
         ActivityType type = form.isLearningSession() ? ActivityType.LESSON : ActivityType.REVIEW;
 
         ActivityForm activityForm = new ActivityForm(
@@ -71,7 +71,8 @@ class CheckerService implements CheckerFacade {
                 type,
                 form.userStrokes(),
                 result.strokeAccuracies(),
-                result.overallAccuracy()
+                result.overallAccuracy(),
+                isSuccess
         );
 
         activityFacade.addActivity(activityForm);

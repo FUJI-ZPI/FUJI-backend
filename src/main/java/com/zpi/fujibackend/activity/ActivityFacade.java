@@ -1,9 +1,6 @@
 package com.zpi.fujibackend.activity;
 
-import com.zpi.fujibackend.activity.dto.ActivityForm;
-import com.zpi.fujibackend.activity.dto.ActivityPlaybackDetails;
-import com.zpi.fujibackend.activity.dto.DailyActivityDetail;
-import com.zpi.fujibackend.activity.dto.DailyActivityStat;
+import com.zpi.fujibackend.activity.dto.*;
 
 import java.time.LocalDate;
 import java.util.List;

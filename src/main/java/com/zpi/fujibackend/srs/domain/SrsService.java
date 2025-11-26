@@ -4,6 +4,7 @@ import com.zpi.fujibackend.common.exception.NotFoundException;
 import com.zpi.fujibackend.kanji.KanjiFacade;
 import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
+import com.zpi.fujibackend.progress.ProgressReadFacade;
 import com.zpi.fujibackend.srs.SrsFacade;
 import com.zpi.fujibackend.srs.dto.CardDto;
 import com.zpi.fujibackend.user.UserFacade;
@@ -29,6 +30,7 @@ class SrsService implements SrsFacade {
     private final CardRepository cardRepository;
     private final KanjiFacade kanjiFacade;
     private final UserFacade userFacade;
+    private final ProgressReadFacade progressReadFacade;
 
     @Override
     public List<CardDto> getReviewBatch(int size) {
@@ -41,7 +43,7 @@ class SrsService implements SrsFacade {
 
     @Override
     public List<KanjiDetailDto> getLessonBatch(int size) {
-        return kanjiFacade.getKanjisNotInCards(size);
+        return kanjiFacade.getKanjisNotInCardsforUser(userFacade.getCurrentUserId(), progressReadFacade.getCurrentUserLevel(), size);
     }
 
     @Override
@@ -84,5 +86,12 @@ class SrsService implements SrsFacade {
                 Instant.now().plus(INTERVALS_IN_HOURS[0], ChronoUnit.HOURS)
         );
         return cardRepository.save(card);
+    }
+
+    @Override
+    public long countMaxFamiliarityCards() {
+        User user = userFacade.getCurrentUser();
+        int maxFamiliarity = INTERVALS_IN_HOURS.length - 1;
+        return cardRepository.countByUserAndMaxFamiliarity(user.getId(), maxFamiliarity);
     }
 }
