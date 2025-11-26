@@ -1,8 +1,8 @@
 package com.zpi.fujibackend.kanji;
 
 
-import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.kanji.domain.Kanji;
+import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
 import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import com.zpi.fujibackend.kanji.dto.ReferenceKanjiDto;
 

@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile("!prod")
-public class MinioConfig {
+@Profile("prod")
+public class MinioProdConfig {
 
     @Value("${MINIO_URL}")
     private String minioUrl;
@@ -19,10 +19,15 @@ public class MinioConfig {
     @Value("${MINIO_SECRET_KEY}")
     private String secretKey;
 
+    @Value("${MINIO_REGION}")
+    private String minioRegion;
+
     @Bean
     public MinioClient minioClient() {
+
         return MinioClient.builder()
                 .endpoint(minioUrl)
+                .region(minioRegion)
                 .credentials(accessKey, secretKey)
                 .build();
     }

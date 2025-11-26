@@ -24,11 +24,11 @@ class SrsController {
 
     @GetMapping(Routes.REVIEW_BATCH)
     List<CardDto> getReviewBatch(@RequestParam(defaultValue = "30") int size) {
-        return srsFacade.getReviewBatch(size);
+        return srsFacade.getReviewBatchForCurrentUser(size);
     }
 
     @GetMapping(Routes.LESSON_BATCH)
     List<KanjiDetailDto> getLessonBatch(@RequestParam(defaultValue = "5") int size) {
-        return srsFacade.getLessonBatch(size);
+        return srsFacade.getLessonBatchForCurrentUser(size);
     }
 }

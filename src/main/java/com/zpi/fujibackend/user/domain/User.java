@@ -27,6 +27,8 @@ public class User extends AbstractUuidEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Progress progress;
 
+    private String fcmToken;
+
     public User(final String email) {
         this.email = email;
         this.created = OffsetDateTime.now();
