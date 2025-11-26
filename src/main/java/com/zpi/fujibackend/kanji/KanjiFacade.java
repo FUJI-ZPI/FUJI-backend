@@ -7,7 +7,6 @@ import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import com.zpi.fujibackend.kanji.dto.ReferenceKanjiDto;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface KanjiFacade {

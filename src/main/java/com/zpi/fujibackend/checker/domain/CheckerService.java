@@ -7,7 +7,6 @@ import com.zpi.fujibackend.activity.ActivityFacade;
 import com.zpi.fujibackend.activity.dto.ActivityForm;
 import com.zpi.fujibackend.activity.dto.ActivityType;
 import com.zpi.fujibackend.algorithm.KanjiAccuracy;
-import com.zpi.fujibackend.algorithm.KanjiNormalizer;
 import com.zpi.fujibackend.checker.CheckerFacade;
 import com.zpi.fujibackend.checker.dto.CheckKanjiForm;
 import com.zpi.fujibackend.checker.dto.CheckStrokeForm;
