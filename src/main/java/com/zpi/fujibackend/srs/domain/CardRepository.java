@@ -16,7 +16,4 @@ interface CardRepository extends JpaRepository<Card, Long> {
     List<Card> findDueForUser(@Param("userId") Long userId, @Param("now") Instant now, Pageable pageable);
 
     Optional<Card> findByUserAndKanji(User user, Kanji kanji);
-
-    @Query("SELECT COUNT(c) FROM Card c WHERE c.user.id = :userId AND c.familiarity = :maxFamiliarity")
-    Integer countByUserAndMaxFamiliarity(@Param("userId") Long userId, @Param("maxFamiliarity") int maxFamiliarity);
 }

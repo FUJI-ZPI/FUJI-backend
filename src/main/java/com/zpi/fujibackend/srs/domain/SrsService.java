@@ -4,7 +4,7 @@ import com.zpi.fujibackend.common.exception.NotFoundException;
 import com.zpi.fujibackend.kanji.KanjiFacade;
 import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.kanji.dto.KanjiDetailDto;
-import com.zpi.fujibackend.progress.ProgressReadFacade;
+import com.zpi.fujibackend.progress.ProgressFacade;
 import com.zpi.fujibackend.srs.SrsFacade;
 import com.zpi.fujibackend.srs.dto.CardDto;
 import com.zpi.fujibackend.user.UserFacade;
@@ -26,13 +26,12 @@ import java.util.UUID;
 class SrsService implements SrsFacade {
 
     private static final int[] INTERVALS_IN_HOURS = {0, 1, 2, 4, 8, 24, 48, 168, 336, 672, 2688};
+    private static final int LEARNING_THRESHOLD = INTERVALS_IN_HOURS.length / 2;
 
     private final CardRepository cardRepository;
-
     private final KanjiFacade kanjiFacade;
     private final UserFacade userFacade;
-    private final ProgressReadFacade progressReadFacade;
-
+    private final ProgressFacade progressFacade;
 
     @Override
     public List<CardDto> getReviewBatchForCurrentUser(int size) {
@@ -48,13 +47,17 @@ class SrsService implements SrsFacade {
                 .toList();
     }
 
-
     @Override
     public List<KanjiDetailDto> getLessonBatchForCurrentUser(int size) {
-        return kanjiFacade.getKanjisNotInCardsforUser(userFacade.getCurrentUserId(), progressReadFacade.getCurrentUserLevel(), size);
+        return kanjiFacade.getKanjisNotInCardsforUser(
+                userFacade.getCurrentUserId(),
+                progressFacade.getUserLevel().level(),
+                size
+        );
     }
 
     @Override
+    @Transactional
     public Card increaseFamiliarity(UUID kanjiUuid) {
         User user = userFacade.getCurrentUser();
         Kanji kanji = kanjiFacade.getKanjiByUuid(kanjiUuid);
@@ -64,6 +67,7 @@ class SrsService implements SrsFacade {
     }
 
     @Override
+    @Transactional
     public Card decreaseFamiliarity(UUID kanjiUuid) {
         User user = userFacade.getCurrentUser();
         Kanji kanji = kanjiFacade.getKanjiByUuid(kanjiUuid);
@@ -73,10 +77,16 @@ class SrsService implements SrsFacade {
     }
 
     private Card changeFamiliarity(Card card, int newFamiliarity) {
+        int oldFamiliarity = card.getFamiliarity();
         card.setFamiliarity(newFamiliarity);
         card.setIntervalHours(INTERVALS_IN_HOURS[newFamiliarity]);
         card.setLastReviewed(Instant.now());
         card.setNextDue(Instant.now().plus(INTERVALS_IN_HOURS[newFamiliarity], ChronoUnit.HOURS));
+
+        if (newFamiliarity >= LEARNING_THRESHOLD && oldFamiliarity < LEARNING_THRESHOLD) {
+            progressFacade.markKanjiAsLearned(card.getKanji());
+        }
+
         return cardRepository.save(card);
     }
 
@@ -94,12 +104,5 @@ class SrsService implements SrsFacade {
                 Instant.now().plus(INTERVALS_IN_HOURS[0], ChronoUnit.HOURS)
         );
         return cardRepository.save(card);
-    }
-
-    @Override
-    public long countMaxFamiliarityCards() {
-        User user = userFacade.getCurrentUser();
-        int maxFamiliarity = INTERVALS_IN_HOURS.length - 1;
-        return cardRepository.countByUserAndMaxFamiliarity(user.getId(), maxFamiliarity);
     }
 }

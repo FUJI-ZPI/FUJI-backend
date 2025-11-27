@@ -1,8 +1,12 @@
 package com.zpi.fujibackend.progress.domain;
 
 import com.zpi.fujibackend.common.exception.NotFoundException;
+import com.zpi.fujibackend.kanji.KanjiFacade;
+import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.progress.ProgressFacade;
-import com.zpi.fujibackend.srs.SrsFacade;
+import com.zpi.fujibackend.progress.dto.DailyStreakDto;
+import com.zpi.fujibackend.progress.dto.KanjiLearnedDto;
+import com.zpi.fujibackend.progress.dto.UserLevelDto;
 import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.user.domain.User;
 import jakarta.transaction.Transactional;
@@ -17,37 +21,39 @@ import java.time.ZoneOffset;
 @Service
 @RequiredArgsConstructor
 class ProgressService implements ProgressFacade {
+
     private final ProgressRepository progressRepository;
     private final UserFacade userFacade;
-    private final SrsFacade srsFacade;
+    private final KanjiFacade kanjiFacade;
 
     @Override
-    public void increaseUserLevel() {
+    public UserLevelDto getUserLevel() {
         final User user = userFacade.getCurrentUser();
-       Progress progress = progressRepository.findProgressByUser(user)
-               .orElseThrow(() -> new NotFoundException("Progress not found for user: " + user.getId()));
-       progress.setLevel(progress.getLevel() + 1);
-       progressRepository.save(progress);
+        return progressRepository.findProgressByUser(user)
+                .map(Progress::getLevel)
+                .map(UserLevelDto::new)
+                .orElseThrow(() -> new NotFoundException("Progress not found for user: " + user.getUuid()));
     }
 
     @Override
-    public Integer getDailyStreak() {
+    public DailyStreakDto getDailyStreak() {
         final User user = userFacade.getCurrentUser();
         return progressRepository.findProgressByUser(user)
                 .map(Progress::getDailyStreak)
-                .orElseThrow(() -> new NotFoundException("Progress not found for user: " + user.getId()));
+                .map(DailyStreakDto::new)
+                .orElseThrow(() -> new NotFoundException("Progress not found for user: " + user.getUuid()));
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateDailyStreak(User user, Instant activityTimestamp) {
         Progress progress = progressRepository.findProgressByUser(user)
                 .orElseThrow(() -> new NotFoundException("Progress not found"));
 
         ZoneId zone = ZoneOffset.UTC;
         LocalDate activityDate = activityTimestamp.atZone(zone).toLocalDate();
-        LocalDate lastUpdateDate = progress.getStreakUpdated() != null
-                ? progress.getStreakUpdated().atZone(zone).toLocalDate()
+        LocalDate lastUpdateDate = progress.getLastStreakUpdated() != null
+                ? progress.getLastStreakUpdated().atZone(zone).toLocalDate()
                 : null;
 
         if (lastUpdateDate != null) {
@@ -60,12 +66,44 @@ class ProgressService implements ProgressFacade {
             progress.setDailyStreak(1);
         }
 
-        progress.setStreakUpdated(activityTimestamp);
+        progress.setLastStreakUpdated(activityTimestamp);
         progressRepository.save(progress);
     }
 
     @Override
-    public long getKanjiLearnedAmount() {
-        return srsFacade.countMaxFamiliarityCards();
+    public KanjiLearnedDto getKanjiLearnedAmount() {
+        final User user = userFacade.getCurrentUser();
+        return progressRepository.findProgressByUser(user)
+                .map(progress -> new KanjiLearnedDto(progress.getLearnedKanji().size()))
+                .orElseThrow(() -> new NotFoundException("Progress not found for user: " + user.getId()));
+    }
+
+    @Override
+    @Transactional
+    public void markKanjiAsLearned(Kanji kanji) {
+        User user = userFacade.getCurrentUser();
+        Progress progress = progressRepository.findProgressByUser(user)
+                .orElseThrow(() -> new NotFoundException("Progress not found for user: " + user.getUuid()));
+
+        progress.getLearnedKanji().add(kanji);
+
+        progressRepository.save(progress);
+
+        Integer currentLevel = progress.getLevel();
+
+        final long learnedKanjiAtCurrentLevel = progress.getLearnedKanji().stream()
+                .filter(k -> k.getLevel().equals(currentLevel))
+                .count();
+
+        final int totalKanjiInLevel = kanjiFacade.getByLevel(currentLevel).size();
+
+        if (totalKanjiInLevel > 0 && learnedKanjiAtCurrentLevel >= totalKanjiInLevel) {
+            increaseUserLevel(progress);
+        }
+    }
+
+    private void increaseUserLevel(Progress progress) {
+        progress.setLevel(progress.getLevel() + 1);
+        progressRepository.save(progress);
     }
 }
