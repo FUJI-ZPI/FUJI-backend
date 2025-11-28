@@ -20,5 +20,4 @@ public interface SrsFacade {
     Card decreaseFamiliarity(UUID uuid);
 
     Card addCard(UUID kanjiUuid);
-
 }

@@ -12,7 +12,6 @@ import com.zpi.fujibackend.kanji.dto.ReferenceKanjiDto;
 import com.zpi.fujibackend.kanji.dto.WanikaniKanjiJsonDto;
 import com.zpi.fujibackend.radical.RadicalKanjiFacade;
 import com.zpi.fujibackend.radical.dto.RadicalDto;
-import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.vocabulary.VocabularyKanjiFacade;
 import com.zpi.fujibackend.vocabulary.dto.VocabularyDto;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ import java.util.UUID;
 class KanjiService implements KanjiFacade {
 
     private final KanjiRepository kanjiRepository;
-    private final UserFacade userFacade;
     private final RadicalKanjiFacade radicalKanjiFacade;
     private final VocabularyKanjiFacade vocabularyKanjiFacade;
 
@@ -118,8 +116,8 @@ class KanjiService implements KanjiFacade {
     }
 
     @Override
-    public List<KanjiDetailDto> getKanjisNotInCards(int size) {
-        return kanjiRepository.findAllNotInCardsForUser(userFacade.getCurrentUserId(), userFacade.getCurrentUserLevel(), Pageable.ofSize(size))
+    public List<KanjiDetailDto> getKanjisNotInCardsforUser(Long userId, Integer userLevel, int size) {
+        return kanjiRepository.findAllNotInCardsForUser(userId, userLevel, Pageable.ofSize(size))
                 .stream()
                 .map(KanjiDetailDto::toDto)
                 .toList();

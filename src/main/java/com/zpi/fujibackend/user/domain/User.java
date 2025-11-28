@@ -1,9 +1,8 @@
 package com.zpi.fujibackend.user.domain;
 
 import com.zpi.fujibackend.common.entity.AbstractUuidEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.zpi.fujibackend.progress.domain.Progress;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,14 +24,14 @@ public class User extends AbstractUuidEntity {
     @Column(nullable = false)
     private OffsetDateTime created;
 
-    @Column(nullable = false)
-    private Integer level;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Progress progress;
 
     private String fcmToken;
 
     public User(final String email) {
         this.email = email;
-        created = OffsetDateTime.now();
-        level = 1;
+        this.created = OffsetDateTime.now();
+        this.progress = new Progress(this);
     }
 }

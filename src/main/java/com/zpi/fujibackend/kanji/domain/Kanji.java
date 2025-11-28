@@ -2,8 +2,10 @@ package com.zpi.fujibackend.kanji.domain;
 
 
 import com.zpi.fujibackend.common.entity.AbstractUuidEntity;
+import com.zpi.fujibackend.progress.domain.Progress;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +14,9 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -45,4 +49,7 @@ public class Kanji extends AbstractUuidEntity {
 
     @Column(name = "drawing_data_count")
     private Integer drawingDataCount;
+
+    @ManyToMany(mappedBy = "learnedKanji")
+    private Set<Progress> progressEntries = new HashSet<>();
 }

@@ -10,14 +10,9 @@ public interface UserFacade {
 
     User getCurrentUser();
 
-    void increaseUserLevel();
-
     Long getCurrentUserId();
-
-    Integer getCurrentUserLevel();
 
     void setCurrentUserFcmToken(final String fcmToken);
 
     List<User> findAllUsersByFcmTokenIsNotNull();
-
 }

@@ -1,13 +1,10 @@
 package com.zpi.fujibackend.activity.domain;
 
 import com.zpi.fujibackend.activity.ActivityFacade;
-import com.zpi.fujibackend.activity.dto.ActivityPlaybackDetails;
-import com.zpi.fujibackend.activity.dto.DailyActivityDetail;
-import com.zpi.fujibackend.activity.dto.DailyActivityStat;
-import com.zpi.fujibackend.activity.dto.ActivityForm;
+import com.zpi.fujibackend.activity.dto.*;
 import com.zpi.fujibackend.algorithm.KanjiNormalizer;
 import com.zpi.fujibackend.common.exception.NotFoundException;
-import com.zpi.fujibackend.kanji.KanjiFacade;
+import com.zpi.fujibackend.progress.ProgressFacade;
 import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +25,25 @@ class ActivityService implements ActivityFacade {
 
     private final ActivityRepository activityRepository;
     private final UserFacade userFacade;
-    private final KanjiFacade kanjiFacade;
+    private final ProgressFacade progressFacade;
 
     @Override
     public void addActivity(ActivityForm form) {
+        Instant currentTimestamp =  Instant.now();
+
         Activity activity = new Activity(
                 form.card(),
                 form.activityType(),
-                Instant.now(),
+                currentTimestamp,
                 form.drawingData(),
                 form.strokesAccuracy(),
                 form.overallAccuracy()
         );
         activityRepository.save(activity);
+
+        if (form.isSuccess()) {
+            progressFacade.updateDailyStreak(form.card().getUser(), currentTimestamp);
+        }
     }
 
     @Override

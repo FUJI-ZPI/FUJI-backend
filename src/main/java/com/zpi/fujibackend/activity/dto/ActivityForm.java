@@ -8,5 +8,6 @@ public record ActivityForm(Card card,
                            ActivityType activityType,
                            List<List<List<Double>>> drawingData,
                            List<Double> strokesAccuracy,
-                           double overallAccuracy) {
+                           double overallAccuracy,
+                           boolean isSuccess) {
 }
