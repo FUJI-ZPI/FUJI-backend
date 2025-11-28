@@ -3,6 +3,7 @@ package com.zpi.fujibackend.progress;
 import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.progress.dto.DailyStreakDto;
 import com.zpi.fujibackend.progress.dto.KanjiLearnedDto;
+import com.zpi.fujibackend.progress.dto.KanjiRemainingDto;
 import com.zpi.fujibackend.progress.dto.UserLevelDto;
 import com.zpi.fujibackend.user.domain.User;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,8 @@ public interface ProgressFacade {
     void updateDailyStreak(User user, Instant activityTimestamp);
 
     KanjiLearnedDto getKanjiLearnedAmount();
+
+    KanjiRemainingDto getKanjiRemainingForLevel(int level);
 
     void markKanjiAsLearned(Kanji kanji);
 }
