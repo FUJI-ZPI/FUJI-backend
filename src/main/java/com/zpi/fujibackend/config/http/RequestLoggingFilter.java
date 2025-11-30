@@ -15,7 +15,10 @@ public class RequestLoggingFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        log.info("Request URL: {} {}", httpRequest.getMethod(), httpRequest.getRequestURL());
+        String requestURI = httpRequest.getRequestURI();
+        if (!requestURI.contains("/actuator/health")) {
+            log.info("Request URL: {} {}", httpRequest.getMethod(), httpRequest.getRequestURL());
+        }
         chain.doFilter(request, response);
     }
 }
