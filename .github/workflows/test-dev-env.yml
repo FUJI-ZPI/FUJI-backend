@@ -5,6 +5,11 @@ on:
     branches: [ "master" ]
   workflow_dispatch:
 
+env:
+  DB_SERVICE_NAME: postgresdb
+  MINIO_SERVICE_NAME: minio
+  BACKEND_SERVICE_NAME: server
+
 jobs:
   test-stack:
     runs-on: ubuntu-latest
@@ -24,16 +29,37 @@ jobs:
         run: |
           echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > src/main/resources/firebase-service-account.json
 
-      - name: Create .env file
+      - name: Create .env file for Maven tests (localhost mode)
         run: |
           echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+
+          sed -i "s/${{ env.DB_SERVICE_NAME }}/localhost/g" .env
+          sed -i "s/${{ env.MINIO_SERVICE_NAME }}/localhost/g" .env
+
+      - name: Start database and MinIO
+        run: docker compose up -d ${{ env.DB_SERVICE_NAME }} ${{ env.MINIO_SERVICE_NAME }}
+
+      - name: Wait for DB and MinIO
+        run: |
+          echo "Waiting for ${{ env.DB_SERVICE_NAME }}..."
+          DB_ID=$(docker compose ps -q ${{ env.DB_SERVICE_NAME }})
+          while [ "$(docker inspect --format='{{json .State.Health.Status}}' $DB_ID | tr -d '"')" != "healthy" ]; do sleep 2; done
+          
+          echo "Waiting for ${{ env.MINIO_SERVICE_NAME }}..."
+          MINIO_ID=$(docker compose ps -q ${{ env.MINIO_SERVICE_NAME }})
+          while [ "$(docker inspect --format='{{json .State.Health.Status}}' $MINIO_ID | tr -d '"')" != "healthy" ]; do sleep 2; done
+          echo "Infrastructure ready!"
 
       - name: Run Java Tests
         run: |
           chmod +x mvnw
           ./mvnw test
 
-      - name: Start containers
+      - name: Restore .env for Docker network mode
+        run: |
+          echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+
+      - name: Start containers with backend
         run: docker compose up -d --build
 
       - name: Wait for backend to be healthy
@@ -41,7 +67,7 @@ jobs:
         run: |
           echo "Waiting for backend to be healthy..."
           
-          CONTAINER_ID=$(docker ps -qf "name=server")
+          CONTAINER_ID=$(docker compose ps -q ${{ env.BACKEND_SERVICE_NAME }})
           
           timeout=300
           elapsed=0
