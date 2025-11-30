@@ -36,6 +36,9 @@ jobs:
           sed -i "s/${{ env.DB_SERVICE_NAME }}/localhost/g" .env
           sed -i "s/${{ env.MINIO_SERVICE_NAME }}/localhost/g" .env
 
+      - name: Load .env file for CI
+        run: cat .env >> $GITHUB_ENV
+
       - name: Start database and MinIO
         run: docker compose up -d ${{ env.DB_SERVICE_NAME }} ${{ env.MINIO_SERVICE_NAME }}
 
@@ -58,6 +61,9 @@ jobs:
       - name: Restore .env for Docker network mode
         run: |
           echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+
+      - name: Load restored .env to CI Environment
+        run: cat .env >> $GITHUB_ENV
 
       - name: Start containers with backend
         run: docker compose up -d --build
