@@ -1,0 +1,14 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "<IMAGE_NAME>",
+      "essential": true,
+      "memory": 1024,
+      "portMappings": [
+        { "hostPort": 80, "containerPort": 8080 }
+      ]
+    }
+  ]
+}

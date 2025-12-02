@@ -1,0 +1,106 @@
+name: Test Dev Environment (unit tests + smoke test)
+
+on:
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+env:
+  DB_SERVICE_NAME: postgresdb
+  MINIO_SERVICE_NAME: minio
+  BACKEND_SERVICE_NAME: server
+
+jobs:
+  test-stack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Create Firebase Config File
+        env:
+            FIREBASE_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          echo "$FIREBASE_JSON" > src/main/resources/firebase-service-account.json
+
+      - name: Create .env file for Maven tests (localhost mode)
+        run: |
+          echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+
+          sed -i "s/${{ env.DB_SERVICE_NAME }}/localhost/g" .env
+          sed -i "s/${{ env.MINIO_SERVICE_NAME }}/localhost/g" .env
+
+      - name: Load .env file for CI
+        run: cat .env >> $GITHUB_ENV
+
+      - name: Start database and MinIO
+        run: docker compose up -d ${{ env.DB_SERVICE_NAME }} ${{ env.MINIO_SERVICE_NAME }}
+
+      - name: Wait for DB and MinIO
+        run: |
+          echo "Waiting for ${{ env.DB_SERVICE_NAME }}..."
+          DB_ID=$(docker compose ps -q ${{ env.DB_SERVICE_NAME }})
+          while [ "$(docker inspect --format='{{json .State.Health.Status}}' $DB_ID | tr -d '"')" != "healthy" ]; do sleep 2; done
+          
+          echo "Waiting for ${{ env.MINIO_SERVICE_NAME }}..."
+          MINIO_ID=$(docker compose ps -q ${{ env.MINIO_SERVICE_NAME }})
+          while [ "$(docker inspect --format='{{json .State.Health.Status}}' $MINIO_ID | tr -d '"')" != "healthy" ]; do sleep 2; done
+          echo "Infrastructure ready!"
+
+      - name: Run Java Tests
+        run: |
+          chmod +x mvnw
+          ./mvnw test
+
+      - name: Restore .env for Docker network mode
+        run: |
+          echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+
+      - name: Load restored .env to CI Environment
+        run: cat .env >> $GITHUB_ENV
+
+      - name: Start containers with backend
+        run: docker compose up -d --build
+
+      - name: Wait for backend to be healthy
+        shell: bash
+        run: |
+          echo "Waiting for backend to be healthy..."
+          
+          CONTAINER_ID=$(docker compose ps -q ${{ env.BACKEND_SERVICE_NAME }})
+          
+          timeout=300
+          elapsed=0
+          interval=5
+          
+          while [ $elapsed -lt $timeout ]; do
+            status=$(docker inspect --format='{{json .State.Health.Status}}' $CONTAINER_ID | tr -d '"')
+            
+            echo "Time: ${elapsed}s | Status: $status"
+            
+            if [ "$status" == "healthy" ]; then
+              echo "Backend is HEALTHY! Test passed."
+              exit 0
+            fi
+            
+            if [ "$status" == "unhealthy" ]; then
+              echo "Backend is UNHEALTHY. Dumping logs..."
+              docker logs $CONTAINER_ID
+              exit 1
+            fi
+            
+            sleep $interval
+            elapsed=$((elapsed + interval))
+          done
+          
+          echo "Timeout reached. Backend did not start in time."
+          docker logs $CONTAINER_ID
+          exit 1
