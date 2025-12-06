@@ -40,7 +40,7 @@ class CheckerService implements CheckerFacade {
         boolean isSuccess = accuracyResult.overallAccuracy() * 100 > PASSING_ACCURACY_THRESHOLD;
 
         if (form.isLearningSession() && !isSuccess) {
-            return new KanjiAccuracy.KanjiAccuracyResult(0, List.of(0d));
+            return accuracyResult;
         }
 
         Card card = updateSrsState(kanji.getUuid(), form.isLearningSession(), isSuccess);
