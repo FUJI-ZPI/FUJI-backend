@@ -43,12 +43,31 @@ class ProgressService implements ProgressFacade {
     }
 
     @Override
+    @Transactional
     public DailyStreakDto getDailyStreak() {
         final User user = userFacade.getCurrentUser();
-        return progressRepository.findProgressByUser(user)
-                .map(Progress::getDailyStreak)
-                .map(DailyStreakDto::new)
-                .orElseThrow(() -> new NotFoundException("Progress not found for user: " + user.getUuid()));
+        Progress progress = progressRepository.findProgressByUser(user)
+                .orElseThrow(() -> new NotFoundException("Progress not found"));
+
+        ZoneId zone = ZoneOffset.UTC;
+        LocalDate today = LocalDate.now(zone);
+
+        LocalDate lastUpdateDate = progress.getLastStreakUpdated() != null
+                ? progress.getLastStreakUpdated().atZone(zone).toLocalDate()
+                : null;
+
+        int currentEffectiveStreak = progress.getDailyStreak();
+
+        if (lastUpdateDate == null || lastUpdateDate.isBefore(today.minusDays(1))) {
+            currentEffectiveStreak = 0;
+
+            if (progress.getDailyStreak() != 0) {
+                progress.setDailyStreak(0);
+                progressRepository.save(progress);
+            }
+        }
+
+        return new DailyStreakDto(currentEffectiveStreak);
     }
 
     @Override

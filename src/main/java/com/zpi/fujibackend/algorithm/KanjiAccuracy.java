@@ -72,12 +72,11 @@ public class KanjiAccuracy {
             double userLength = getPathLength(user);
             double refLength = getPathLength(ref);
 
-            List<Double> userStart = user.get(0);
-            List<Double> userEnd = user.get(user.size() - 1);
-            List<Double> refStart = ref.get(0);
-            List<Double> refEnd = ref.get(ref.size() - 1);
+            List<Double> userStart = user.getFirst();
+            List<Double> userEnd = user.getLast();
+            List<Double> refStart = ref.getFirst();
+            List<Double> refEnd = ref.getLast();
 
-            // global direction
             double userAngle = Math.atan2(userEnd.get(1) - userStart.get(1), userEnd.get(0) - userStart.get(0));
             double refAngle = Math.atan2(refEnd.get(1) - refStart.get(1), refEnd.get(0) - refStart.get(0));
 
@@ -87,14 +86,12 @@ public class KanjiAccuracy {
                 return 0.0;
             }
 
-            // --- Anchor filter ---
             double startErr = distance(userStart, refStart) / STROKE_TOLERANCE_POSITION;
             double endErr = distance(userEnd, refEnd) / STROKE_TOLERANCE_POSITION;
 
             if (startErr > MAX_ALLOWED_ANCHOR_ERROR) return 0.0;
             if (endErr > MAX_ALLOWED_ANCHOR_ERROR) return 0.0;
 
-            // preprocess
             List<List<Double>> u = preprocess(user);
             List<List<Double>> r = preprocess(ref);
 
@@ -104,11 +101,9 @@ public class KanjiAccuracy {
             List<Double> absU = calculateAbsoluteAngles(u);
             List<Double> absR = calculateAbsoluteAngles(r);
 
-            // DTW
             double dtw = dtwDistance(u, turnU, absU, r, turnR, absR);
             double dtwScore = Math.max(0.0, 1.0 - (dtw / RESAMPLE_POINTS_COUNT));
 
-            // length score
             double lengthScore = 1.0;
             if (refLength > 0.001) {
                 double ratioError = abs(userLength - refLength) / refLength;
@@ -184,7 +179,7 @@ public class KanjiAccuracy {
                 List<Double> p1 = s.get(i);
                 out.add(Math.atan2(p1.get(1) - p0.get(1), p1.get(0) - p0.get(0)));
             }
-            out.add(out.get(out.size() - 1));
+            out.add(out.getLast());
 
             return out;
         }
@@ -195,7 +190,7 @@ public class KanjiAccuracy {
             if (total <= 0.0) {
                 List<List<Double>> res = new ArrayList<>();
                 if (!stroke.isEmpty()) {
-                    List<Double> p = stroke.get(0);
+                    List<Double> p = stroke.getFirst();
                     for (int i = 0; i < n; i++) {
                         res.add(List.of(p.get(0), p.get(1)));
                     }
@@ -204,10 +199,9 @@ public class KanjiAccuracy {
             }
 
             double interval = total / (n - 1);
-
             List<List<Double>> out = new ArrayList<>();
-            out.add(stroke.get(0));
 
+            out.add(stroke.getFirst());
             double D = 0.0;
 
             for (int i = 1; i < stroke.size(); i++) {
@@ -236,7 +230,7 @@ public class KanjiAccuracy {
             }
 
             while (out.size() < n) {
-                List<Double> last = stroke.get(stroke.size() - 1);
+                List<Double> last = stroke.getLast();
                 out.add(List.of(last.get(0), last.get(1)));
             }
 

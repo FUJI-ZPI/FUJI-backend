@@ -138,13 +138,4 @@ class KanjiService implements KanjiFacade {
                 })
                 .toList();
     }
-
-    private List<List<List<Double>>> parseDrawingData(String json) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(json, new TypeReference<>() {});
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error parsing drawingData JSON", e);
-        }
-    }
 }
