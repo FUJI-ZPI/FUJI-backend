@@ -1,8 +1,5 @@
 package com.zpi.fujibackend.checker.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zpi.fujibackend.activity.ActivityFacade;
 import com.zpi.fujibackend.activity.dto.ActivityForm;
 import com.zpi.fujibackend.activity.dto.ActivityType;
@@ -33,8 +30,6 @@ class CheckerService implements CheckerFacade {
     @Override
     public KanjiAccuracy.KanjiAccuracyResult checkKanji(CheckKanjiForm form) {
         Kanji kanji = kanjiFacade.getKanjiByUuid(form.kaniUuid());
-
-//        KanjiAccuracy.KanjiAccuracyResult accuracyResult = calculateResult(kanji, form.userStrokes());
 
         final KanjiAccuracy.KanjiAccuracyResult accuracyResult = KanjiAccuracy.KanjiComparator.calculateKanjiAccuracy(form.userStrokes(), form.referenceStrokes());
         boolean isSuccess = accuracyResult.overallAccuracy() * 100 > PASSING_ACCURACY_THRESHOLD;
@@ -77,26 +72,10 @@ class CheckerService implements CheckerFacade {
         activityFacade.addActivity(activityForm);
     }
 
-//    private KanjiAccuracy.KanjiAccuracyResult calculateResult(Kanji kanji, List<List<List<Double>>> userStrokes) {
-//        return KanjiAccuracy.KanjiComparator.calculateKanjiAccuracy(
-//                userStrokes,
-////                KanjiNormalizer.momentNormalizeFixed(parseDrawingData(kanji.getDrawingData()))
-//        );
-//    }
-
     @Override
     public KanjiAccuracy.KanjiAccuracyResult checkStroke(CheckStrokeForm form) {
         List<List<List<Double>>> userStrokeList = List.of(form.userStroke());
         List<List<List<Double>>> referenceStrokeList = List.of(form.referenceStroke());
         return KanjiAccuracy.KanjiComparator.calculateKanjiAccuracy(userStrokeList, referenceStrokeList);
-    }
-
-    private static List<List<List<Double>>> parseDrawingData(String json) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(json, new TypeReference<>() {});
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error parsing drawingData JSON", e);
-        }
     }
 }

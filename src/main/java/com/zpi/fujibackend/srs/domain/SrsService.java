@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,19 +43,25 @@ class SrsService implements SrsFacade {
 
     @Override
     public List<CardDto> getReviewBatch(int size, User user) {
-        return cardRepository.findDueForUser(user.getId(), Instant.now(), PageRequest.of(0, size))
+        List<CardDto> cards = new ArrayList<>(cardRepository.findDueForUser(user.getId(), Instant.now(), PageRequest.of(0, size))
                 .stream()
                 .map(card -> new CardDto(card.getUuid(), KanjiDetailDto.toDto(card.getKanji())))
-                .toList();
+                .toList());
+
+        Collections.shuffle(cards);
+        return cards;
     }
 
     @Override
     public List<KanjiDetailDto> getLessonBatchForCurrentUser(int size) {
-        return kanjiFacade.getKanjisNotInCardsforUser(
+        List<KanjiDetailDto> lessons = new ArrayList<>(kanjiFacade.getKanjisNotInCardsforUser(
                 userFacade.getCurrentUserId(),
                 progressFacade.getUserLevel().level(),
                 size
-        );
+        ));
+
+        Collections.shuffle(lessons);
+        return lessons;
     }
 
     @Override
