@@ -1,12 +1,14 @@
 # FUJI - Japanese Learning App Backend
 
-<img width="900" alt="FUJI poster" src="https://github.com/user-attachments/assets/c2219f08-5b16-48de-8006-a0fd76f899ac" />
-
-**Fast Understanding Japanese Interface**
-
 <p>
 Backend service for the FUJI mobile app, enabling Japanese handwriting mastery through algorithm-based verification.
 </p>
+
+<div align="center">
+<img width="600" alt="FUJI poster" src="https://github.com/user-attachments/assets/c2219f08-5b16-48de-8006-a0fd76f899ac" />
+
+</div>
+
 
 [![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=openjdk)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-brightgreen?style=flat-square&logo=springboot)](https://spring.io/projects/spring-boot)
