@@ -6,6 +6,10 @@ Japanese handwriting (Kanji) and vocabulary using a Spaced Repetition System (SR
 This service provides the core REST API for the mobile client, managing user data, authentication, learning materials,
 and handwriting recognition.
 
+
+<img width="1754" height="2483" alt="FUJI poster" src="https://github.com/user-attachments/assets/c2219f08-5b16-48de-8006-a0fd76f899ac" />
+
+
 ## Core Features
 
 * **Authentication**: Secure user login and registration via Google OAuth, managed with JWT.
