@@ -28,7 +28,7 @@ Backend service for the FUJI mobile app, enabling Japanese handwriting mastery t
 
 ## Tech Stack
 
-- **Core**: Java 21, Spring Boot 3
+* **Core**: Java 21, Spring Boot 3
 * **Database**: PostgreSQL, Spring Data JPA, Flyway
 * **Security**: Spring Security, JWT, Google OAuth Client
 * **API**: Spring Web (REST), Springdoc (Swagger UI)
