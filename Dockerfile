@@ -4,12 +4,9 @@
 # which are then used to create an artifact
 FROM eclipse-temurin:21-jdk-jammy AS builder
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
-USER appuser
 WORKDIR /opt/app
-COPY .mvn/ .mvn
-RUN chown -R appuser:appgroup .mvn
-COPY mvnw pom.xml ./
-RUN chown appuser:appgroup mvnw pom.xml
+COPY --chown=appuser:appgroup .mvn/ .mvn
+COPY --chown=appuser:appgroup mvnw pom.xml ./
 RUN chmod +x ./mvnw
 RUN ./mvnw dependency:go-offline
 COPY ./src ./src
@@ -21,7 +18,7 @@ FROM eclipse-temurin:21-jre-jammy
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 WORKDIR /opt/app
 RUN chown -R appuser:appgroup /opt/app
+COPY --chown=appuser:appgroup --from=builder /opt/app/target/*.jar /opt/app/app.jar
 USER appuser
 EXPOSE 8080
-COPY --from=builder /opt/app/target/*.jar /opt/app/*.jar
 ENTRYPOINT ["java", "-jar", "/opt/app/*.jar" ]
