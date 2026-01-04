@@ -21,4 +21,4 @@ RUN chown -R appuser:appgroup /opt/app
 COPY --chown=appuser:appgroup --from=builder /opt/app/target/*.jar /opt/app/app.jar
 USER appuser
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/opt/app/*.jar" ]
+ENTRYPOINT ["java", "-jar", "/opt/app/app.jar" ]
