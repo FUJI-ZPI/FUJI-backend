@@ -59,6 +59,16 @@ jobs:
         run: |
           chmod +x mvnw
           ./mvnw test
+      - name: Run Trivy vulnerability scanner (SCA)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL'
 
       - name: Restore .env for Docker network mode
         run: |
@@ -104,3 +114,4 @@ jobs:
           echo "Timeout reached. Backend did not start in time."
           docker logs $CONTAINER_ID
           exit 1
+      
