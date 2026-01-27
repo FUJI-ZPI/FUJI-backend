@@ -1,9 +1,12 @@
 package com.zpi.fujibackend.progress.domain;
 
+import com.zpi.fujibackend.chatbot.dto.LearnedKanjiInfoDto;
 import com.zpi.fujibackend.common.exception.NotFoundException;
+import com.zpi.fujibackend.config.converter.JsonConverter;
 import com.zpi.fujibackend.kanji.KanjiFacade;
 import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.kanji.dto.KanjiDto;
+import com.zpi.fujibackend.kanji.dto.WanikaniKanjiJsonDto;
 import com.zpi.fujibackend.progress.ProgressFacade;
 import com.zpi.fujibackend.progress.dto.DailyStreakDto;
 import com.zpi.fujibackend.progress.dto.KanjiLearnedDto;
@@ -19,10 +22,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -157,5 +157,48 @@ class ProgressService implements ProgressFacade {
             progress.setLevel(progress.getLevel() + 1);
             progressRepository.save(progress);
         }
+    }
+
+    @Override
+    public List<LearnedKanjiInfoDto> getRecentlyLearnedKanjiForChatbot(int limit) {
+        final User user = userFacade.getCurrentUser();
+        return progressRepository.findProgressByUser(user)
+                .map(progress -> progress.getLearnedKanji().stream()
+                        .limit(limit)
+                        .map(this::convertKanjiToLearnedInfo)
+                        .toList())
+                .orElse(Collections.emptyList());
+    }
+
+    private LearnedKanjiInfoDto convertKanjiToLearnedInfo(Kanji kanji) {
+        String meaning = "";
+        String reading = "";
+
+        if (kanji.getDocument() != null && !kanji.getDocument().isBlank()) {
+            try {
+                WanikaniKanjiJsonDto wanikaniDto = JsonConverter.convertToDto(kanji.getDocument(), WanikaniKanjiJsonDto.class);
+                if (wanikaniDto != null && wanikaniDto.data() != null) {
+                    // Get primary meaning
+                    if (wanikaniDto.data().meanings() != null) {
+                        meaning = wanikaniDto.data().meanings().stream()
+                                .filter(m -> m.primary() != null && m.primary())
+                                .map(WanikaniKanjiJsonDto.Meaning::meaning)
+                                .findFirst()
+                                .orElse("");
+                    }
+                    // Get primary reading
+                    if (wanikaniDto.data().readings() != null) {
+                        reading = wanikaniDto.data().readings().stream()
+                                .filter(r -> r.primary() != null && r.primary())
+                                .map(WanikaniKanjiJsonDto.Reading::reading)
+                                .findFirst()
+                                .orElse("");
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        return new LearnedKanjiInfoDto(kanji.getCharacter(), meaning, reading);
     }
 }

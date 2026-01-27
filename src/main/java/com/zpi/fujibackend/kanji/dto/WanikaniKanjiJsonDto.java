@@ -41,7 +41,7 @@ public record WanikaniKanjiJsonDto(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    record Meaning(
+    public record Meaning(
             String meaning,
             Boolean primary,
             Boolean acceptedAnswer
@@ -50,7 +50,7 @@ public record WanikaniKanjiJsonDto(
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    record Reading(
+    public record Reading(
             String type,
             Boolean primary,
             String reading,
