@@ -96,7 +96,7 @@ class ChatbotService implements ChatbotFacade {
                 .collect(Collectors.joining("\n"));
 
         String learnedKanjiContext = buildLearnedKanjiContext();
-        System.out.println("Learned Kanji: " + learnedKanjiContext);
+//        System.out.println("Learned Kanji: " + learnedKanjiContext);
 //        System.out.println(learnedKanjiContext);
 
         String fullSystemPrompt = SYSTEM_PROMPT + learnedKanjiContext;
