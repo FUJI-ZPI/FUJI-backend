@@ -77,7 +77,7 @@
         <dependency>
             <groupId>com.openai</groupId>
             <artifactId>openai-java</artifactId>
-            <version>4.1.0</version>
+            <version>4.16.1</version>
         </dependency>
 
         <dependency>
