@@ -6,7 +6,7 @@
       "image": "<IMAGE_NAME>",
       "essential": true,
       "memory": 1536,
-      "memoryReservation": 1024
+      "memoryReservation": 1024,
       "portMappings": [
         { "hostPort": 80, "containerPort": 8080 }
       ]
