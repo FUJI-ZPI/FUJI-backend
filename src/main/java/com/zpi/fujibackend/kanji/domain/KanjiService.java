@@ -1,8 +1,5 @@
 package com.zpi.fujibackend.kanji.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zpi.fujibackend.common.exception.NotFoundException;
 import com.zpi.fujibackend.config.converter.JsonConverter;
 import com.zpi.fujibackend.kanji.KanjiFacade;
@@ -137,5 +134,10 @@ class KanjiService implements KanjiFacade {
                     return new ReferenceKanjiDto(kanji.getUuid(), kanji.getCharacter(), points);
                 })
                 .toList();
+    }
+
+    @Override
+    public long countMissingKanjiForUser(long userId, int level) {
+        return kanjiRepository.countMissingKanjiForUser(userId, level);
     }
 }

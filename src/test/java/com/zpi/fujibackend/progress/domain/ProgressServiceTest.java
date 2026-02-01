@@ -6,7 +6,7 @@ import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import com.zpi.fujibackend.progress.dto.DailyStreakDto;
 import com.zpi.fujibackend.progress.dto.KanjiLearnedDto;
-import com.zpi.fujibackend.progress.dto.KanjiRemainingDto;
+import com.zpi.fujibackend.progress.dto.KanjiAmountRemainingDto;
 import com.zpi.fujibackend.progress.dto.UserLevelDto;
 import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.user.domain.User;
@@ -236,10 +236,9 @@ class ProgressServiceTest {
         given(kanjiFacade.getByLevel(1)).willReturn(List.of(learnedKanjiDto, missingKanjiDto1));
         given(kanjiFacade.getByLevel(2)).willReturn(List.of(missingKanjiDto2));
 
-        KanjiRemainingDto result = progressService.getKanjiRemainingForLevel(2);
+        KanjiAmountRemainingDto result = progressService.getKanjiAmountRemainingForLevel(2);
 
         assertThat(result.amount()).isEqualTo(2);
-        assertThat(result.kanji()).containsExactlyInAnyOrder(missingKanjiDto1, missingKanjiDto2);
     }
 
     @Test

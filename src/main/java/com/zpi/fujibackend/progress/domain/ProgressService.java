@@ -5,12 +5,11 @@ import com.zpi.fujibackend.common.exception.NotFoundException;
 import com.zpi.fujibackend.config.converter.JsonConverter;
 import com.zpi.fujibackend.kanji.KanjiFacade;
 import com.zpi.fujibackend.kanji.domain.Kanji;
-import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import com.zpi.fujibackend.kanji.dto.WanikaniKanjiJsonDto;
 import com.zpi.fujibackend.progress.ProgressFacade;
 import com.zpi.fujibackend.progress.dto.DailyStreakDto;
 import com.zpi.fujibackend.progress.dto.KanjiLearnedDto;
-import com.zpi.fujibackend.progress.dto.KanjiRemainingDto;
+import com.zpi.fujibackend.progress.dto.KanjiAmountRemainingDto;
 import com.zpi.fujibackend.progress.dto.UserLevelDto;
 import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.user.domain.User;
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -85,7 +83,7 @@ class ProgressService implements ProgressFacade {
         if (lastUpdateDate != null) {
             if (lastUpdateDate.isEqual(activityDate.minusDays(1))) {
                 progress.setDailyStreak(progress.getDailyStreak() + 1);
-            } else if (!lastUpdateDate.isEqual(activityDate)){
+            } else if (!lastUpdateDate.isEqual(activityDate)) {
                 progress.setDailyStreak(1);
             }
         } else {
@@ -109,30 +107,13 @@ class ProgressService implements ProgressFacade {
     }
 
     @Override
-    public KanjiRemainingDto getKanjiRemainingForLevel(int level) {
+    public KanjiAmountRemainingDto getKanjiAmountRemainingForLevel(int level) {
         final User user = userFacade.getCurrentUser();
-        Progress progress = progressRepository.findProgressByUser(user)
-                .orElseThrow(() -> new NotFoundException("Progress not found for user: " + user.getId()));
 
-        Set<UUID> learnedKanjiIds = progress.getLearnedKanji().stream()
-                .map(Kanji::getUuid)
-                .collect(Collectors.toSet());
+        long missingCount = kanjiFacade.countMissingKanjiForUser(user.getId(), level);
 
-        List<KanjiDto> allMissingKanji = new ArrayList<>();
-
-        for (int i = 1; i <= level; i++) {
-            List<KanjiDto> kanjiOnLevel = kanjiFacade.getByLevel(i);
-
-            List<KanjiDto> missingOnThisLevel = kanjiOnLevel.stream()
-                    .filter(dto -> !learnedKanjiIds.contains(dto.uuid()))
-                    .toList();
-
-            allMissingKanji.addAll(missingOnThisLevel);
-        }
-
-        return new KanjiRemainingDto(allMissingKanji.size(), allMissingKanji);
+        return new KanjiAmountRemainingDto((int) missingCount);
     }
-
 
     @Override
     @Transactional
