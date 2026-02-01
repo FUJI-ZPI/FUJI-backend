@@ -19,4 +19,6 @@ public interface KanjiFacade {
     Kanji getKanjiByUuid(UUID uuid);
 
     List<ReferenceKanjiDto> getKanjiByStrokeNumber(int strokeNumber);
+
+    long countMissingKanjiForUser(long userId, int level);
 }

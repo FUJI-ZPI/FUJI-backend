@@ -27,4 +27,17 @@ interface KanjiRepository extends JpaRepository<Kanji, Long> {
     Optional<Kanji> findByUuid(UUID uuid);
 
     List<Kanji> findByDrawingDataCount(int strokeNumber);
+
+    @Query("""
+        SELECT COUNT(k)
+        FROM Kanji k
+        WHERE k.level <= :maxLevel
+        AND k NOT IN (
+            SELECT learned
+            FROM Progress p
+            JOIN p.learnedKanji learned
+            WHERE p.user.id = :userId
+        )
+    """)
+    long countMissingKanjiForUser(@Param("userId") Long userId, @Param("maxLevel") int maxLevel);
 }

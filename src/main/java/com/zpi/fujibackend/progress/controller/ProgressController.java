@@ -3,7 +3,7 @@ package com.zpi.fujibackend.progress.controller;
 import com.zpi.fujibackend.progress.ProgressFacade;
 import com.zpi.fujibackend.progress.dto.DailyStreakDto;
 import com.zpi.fujibackend.progress.dto.KanjiLearnedDto;
-import com.zpi.fujibackend.progress.dto.KanjiRemainingDto;
+import com.zpi.fujibackend.progress.dto.KanjiAmountRemainingDto;
 import com.zpi.fujibackend.progress.dto.UserLevelDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ class ProgressController {
     }
 
     @GetMapping(Routes.KANJI_REMAINING)
-    KanjiRemainingDto getKanjiRemainingForLevel(@RequestParam int level) {
-        return progressFacade.getKanjiRemainingForLevel(level);
+    KanjiAmountRemainingDto getKanjiAmountRemainingForLevel(@RequestParam int level) {
+        return progressFacade.getKanjiAmountRemainingForLevel(level);
     }
 }

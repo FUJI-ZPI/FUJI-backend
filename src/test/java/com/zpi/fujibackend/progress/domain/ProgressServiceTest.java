@@ -6,7 +6,7 @@ import com.zpi.fujibackend.kanji.domain.Kanji;
 import com.zpi.fujibackend.kanji.dto.KanjiDto;
 import com.zpi.fujibackend.progress.dto.DailyStreakDto;
 import com.zpi.fujibackend.progress.dto.KanjiLearnedDto;
-import com.zpi.fujibackend.progress.dto.KanjiRemainingDto;
+import com.zpi.fujibackend.progress.dto.KanjiAmountRemainingDto;
 import com.zpi.fujibackend.progress.dto.UserLevelDto;
 import com.zpi.fujibackend.user.UserFacade;
 import com.zpi.fujibackend.user.domain.User;
@@ -22,7 +22,6 @@ import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -219,27 +218,18 @@ class ProgressServiceTest {
     }
 
     @Test
-    void getKanjiRemainingForLevel_ShouldReturnMissingKanji() {
+    void getKanjiAmountRemainingForLevel_ShouldReturnMissingKanjiAmount() {
         User user = new User();
-        Progress progress = new Progress();
-
-        Kanji learnedKanji = new Kanji();
-        learnedKanji.setUuid(UUID.randomUUID());
-        progress.setLearnedKanji(Set.of(learnedKanji));
-
-        KanjiDto learnedKanjiDto = new KanjiDto(learnedKanji.getUuid(), "A");
-        KanjiDto missingKanjiDto1 = new KanjiDto(UUID.randomUUID(), "B");
-        KanjiDto missingKanjiDto2 = new KanjiDto(UUID.randomUUID(), "C");
+        user.setId(1L);
+        int targetLevel = 2;
+        long expectedCount = 2L;
 
         given(userFacade.getCurrentUser()).willReturn(user);
-        given(progressRepository.findProgressByUser(user)).willReturn(Optional.of(progress));
-        given(kanjiFacade.getByLevel(1)).willReturn(List.of(learnedKanjiDto, missingKanjiDto1));
-        given(kanjiFacade.getByLevel(2)).willReturn(List.of(missingKanjiDto2));
+        given(kanjiFacade.countMissingKanjiForUser(1L, targetLevel)).willReturn(expectedCount);
 
-        KanjiRemainingDto result = progressService.getKanjiRemainingForLevel(2);
+        KanjiAmountRemainingDto result = progressService.getKanjiAmountRemainingForLevel(targetLevel);
 
-        assertThat(result.amount()).isEqualTo(2);
-        assertThat(result.kanji()).containsExactlyInAnyOrder(missingKanjiDto1, missingKanjiDto2);
+        assertThat(result.amount()).isEqualTo(expectedCount);
     }
 
     @Test
