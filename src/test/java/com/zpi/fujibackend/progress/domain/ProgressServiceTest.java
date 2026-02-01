@@ -229,7 +229,7 @@ class ProgressServiceTest {
 
         KanjiAmountRemainingDto result = progressService.getKanjiAmountRemainingForLevel(targetLevel);
 
-        assertThat(result.amount()).isEqualTo(2);
+        assertThat(result.amount()).isEqualTo(expectedCount);
     }
 
     @Test
