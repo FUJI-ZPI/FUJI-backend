@@ -67,6 +67,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: ${{ env.EB_APPLICATION_NAME }}
           environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
-          version_label: "ver-${{ github.sha }}"
+          version_label: "ver-${{ github.sha }}-${{ github.run_number }}-${{ github.run_attempt }}"
           region: ${{ env.AWS_REGION }}
           deployment_package: "Dockerrun.aws.json"
